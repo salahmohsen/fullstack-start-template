@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-
 import { createMcpHandler } from "@vercel/mcp-adapter";
+
 import { tools } from "@/features/ai/mcp-tools";
 import { auth } from "@/lib/auth/auth";
 
@@ -24,7 +24,12 @@ const handler = async (req: Request) => {
       // biome-ignore lint/complexity/noForEach: <explanation>
       tools.forEach((tool) => {
         console.log("🌐 Registering tool", tool.name);
-        server.tool(tool.name, tool.description, tool.inputSchema ? tool.inputSchema.shape : {}, tool.callback);
+        server.tool(
+          tool.name,
+          tool.description,
+          tool.inputSchema ? tool.inputSchema.shape : {},
+          tool.callback,
+        );
       });
     },
     {
@@ -37,7 +42,7 @@ const handler = async (req: Request) => {
               };
               return acc;
             },
-            {} as Record<string, { description: string }>
+            {} as Record<string, { description: string }>,
           ),
         },
       },
@@ -49,7 +54,7 @@ const handler = async (req: Request) => {
       onEvent(event) {
         console.log("🔑 Event", event);
       },
-    }
+    },
   )(req);
 };
 

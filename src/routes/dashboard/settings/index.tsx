@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
+
 import { Separator } from "@/components/ui/separator";
 import { OrganizationCard } from "@/features/organization/organization-card";
 import AdminDashboard from "@/features/user/admin";
@@ -20,7 +21,7 @@ function RouteComponent() {
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          <p className="text-muted-foreground text-sm">Loading...</p>
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -30,8 +31,8 @@ function RouteComponent() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
-          <p className="mb-2 text-destructive text-sm">Error loading settings</p>
-          <p className="text-muted-foreground text-xs">Please try refreshing the page</p>
+          <p className="mb-2 text-sm text-destructive">Error loading settings</p>
+          <p className="text-xs text-muted-foreground">Please try refreshing the page</p>
         </div>
       </div>
     );
@@ -40,8 +41,10 @@ function RouteComponent() {
   return (
     <div className="container mx-auto max-w-6xl space-y-8 py-6">
       <div className="space-y-2">
-        <h1 className="font-bold text-3xl tracking-tight">{t("SETTINGS")}</h1>
-        <p className="text-muted-foreground">Manage your account, organization, and security settings</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t("SETTINGS")}</h1>
+        <p className="text-muted-foreground">
+          Manage your account, organization, and security settings
+        </p>
       </div>
 
       <Separator />
@@ -49,18 +52,23 @@ function RouteComponent() {
       <div className="grid gap-8">
         <section className="space-y-4">
           <div className="space-y-1">
-            <h2 className="font-semibold text-xl">{t("ORGANIZATION")}</h2>
-            <p className="text-muted-foreground text-sm">Manage your organization settings and member access</p>
+            <h2 className="text-xl font-semibold">{t("ORGANIZATION")}</h2>
+            <p className="text-sm text-muted-foreground">
+              Manage your organization settings and member access
+            </p>
           </div>
-          <OrganizationCard session={data?.session?.data || null} activeOrganization={data?.organization?.data} />
+          <OrganizationCard
+            activeOrganization={data?.organization?.data}
+            session={data?.session?.data || null}
+          />
         </section>
 
         <Separator />
 
         <section className="space-y-4">
           <div className="space-y-1">
-            <h2 className="font-semibold text-xl">Account</h2>
-            <p className="text-muted-foreground text-sm">
+            <h2 className="text-xl font-semibold">Account</h2>
+            <p className="text-sm text-muted-foreground">
               Manage your personal account settings and security preferences
             </p>
           </div>
@@ -73,8 +81,10 @@ function RouteComponent() {
             <Separator />
             <section className="space-y-4">
               <div className="space-y-1">
-                <h2 className="font-semibold text-xl">{t("ADMIN_DASHBOARD")}</h2>
-                <p className="text-muted-foreground text-sm">Administrative tools and user management (admin only)</p>
+                <h2 className="text-xl font-semibold">{t("ADMIN_DASHBOARD")}</h2>
+                <p className="text-sm text-muted-foreground">
+                  Administrative tools and user management (admin only)
+                </p>
               </div>
               <AdminDashboard />
             </section>

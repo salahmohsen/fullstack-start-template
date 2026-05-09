@@ -1,7 +1,6 @@
 import { vercel } from "@ai-sdk/vercel";
 import { createFileRoute } from "@tanstack/react-router";
 import { json } from "@tanstack/react-start";
-
 import { convertToModelMessages, streamText } from "ai";
 
 export const Route = createFileRoute("/api/ai/vercel/chat")({

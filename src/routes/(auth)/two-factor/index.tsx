@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+
 import TwoFactorForm from "@/features/auth/two-factor";
 import { useTranslation } from "@/lib/intl/react";
 
@@ -11,12 +12,12 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col items-center p-2 md:p-6">
-      <div className="w-full max-w-md rounded-lg bg-elevated p-4 md:p-8">
+      <div className="bg-elevated w-full max-w-md rounded-lg p-4 md:p-8">
         <TwoFactorForm />
 
         <div className="mt-4 text-center">
           {t("DONT_HAVE_ACCOUNT")}{" "}
-          <Link to="/login" className="underline">
+          <Link className="underline" to="/login">
             {t("LOGIN")}
           </Link>
           !

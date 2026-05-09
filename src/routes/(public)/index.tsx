@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-
 import {
   Activity,
   ArrowRight,
@@ -8,7 +7,6 @@ import {
   CheckCircle,
   Code,
   Database,
-  Github,
   LayoutDashboard,
   Mail,
   Menu,
@@ -20,7 +18,6 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-
 import { useState } from "react";
 
 import { ModeToggle } from "@/components/theme-toggle";
@@ -158,21 +155,21 @@ function LandingPage() {
         <div className="flex h-16 w-full items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <TerminalSquare className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg">Boilerplate</span>
+            <span className="text-lg font-bold">Boilerplate</span>
           </div>
 
           <nav className="hidden items-center justify-center md:flex">
             <ModeToggle />
             <a
-              className="flex items-center gap-1 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground"
+              className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               href="https://github.com/carlosziegler/fullstack-start-template"
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Github className="h-4 w-4" /> GitHub
+              GitHub
             </a>
             <Link
-              className="ml-8 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground"
+              className="ml-8 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               to="/login"
             >
               Login
@@ -181,38 +178,55 @@ function LandingPage() {
 
           <div className="flex items-center gap-4 md:hidden">
             <Sheet onOpenChange={setMobileMenuOpen} open={mobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
+              <SheetTrigger
+                render={
+                  <Button size="icon" variant="ghost">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle menu</span>
+                  </Button>
+                }
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
               </SheetTrigger>
               <SheetContent className="w-[300px] sm:w-[400px]" side="right">
                 <div className="flex flex-col gap-6 pt-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <TerminalSquare className="h-6 w-6 text-primary" />
-                      <span className="font-bold text-lg">Boilerplate</span>
+                      <span className="text-lg font-bold">Boilerplate</span>
                     </div>
                   </div>
                   <nav className="flex flex-col gap-4">
                     <ModeToggle />
-                    <Button asChild className="w-full justify-start" variant="ghost">
-                      <a
-                        className="flex items-center gap-2"
-                        href="https://github.com/YOUR_REPO_LINK"
-                        onClick={() => setMobileMenuOpen(false)}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        <Github className="h-4 w-4" /> GitHub
-                      </a>
-                    </Button>
-                    <Button asChild className="w-full justify-start" variant="ghost">
-                      <Link className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)} to="/login">
-                        Login
-                      </Link>
-                    </Button>
+                    <Button
+                      render={
+                        <a
+                          className="flex items-center gap-2"
+                          href="https://github.com/YOUR_REPO_LINK"
+                          onClick={() => setMobileMenuOpen(false)}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          GitHub
+                        </a>
+                      }
+                      className="w-full justify-start"
+                      variant="ghost"
+                    />
+                    <Button
+                      className="w-full justify-start"
+                      render={
+                        <Link
+                          className="flex items-center gap-2"
+                          onClick={() => setMobileMenuOpen(false)}
+                          to="/login"
+                        >
+                          Login
+                        </Link>
+                      }
+                      variant="ghost"
+                    />
                   </nav>
                 </div>
               </SheetContent>
@@ -223,21 +237,24 @@ function LandingPage() {
 
       <main className="flex-1 px-4 py-12 md:py-16 lg:py-20">
         <div className="mb-12 text-center md:mb-16">
-          <h1 className="mb-4 bg-gradient-to-r from-primary via-violet-500 to-secondary bg-clip-text font-bold text-3xl text-transparent tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 bg-gradient-to-r from-primary via-violet-500 to-secondary bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
             Modern Full-Stack Boilerplate
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
-            Jumpstart your next project with this feature-rich boilerplate, built with a modern, type-safe stack focused
-            on developer experience.
+            Jumpstart your next project with this feature-rich boilerplate, built with a modern,
+            type-safe stack focused on developer experience.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {techStack.map((tech) => (
-            <Card className="flex flex-col transition-shadow duration-200 hover:shadow-lg" key={tech.category}>
+            <Card
+              className="flex flex-col transition-shadow duration-200 hover:shadow-lg"
+              key={tech.category}
+            >
               <CardHeader className="flex flex-row items-center gap-3 pb-4">
                 <tech.icon className="h-6 w-6 text-primary" />
-                <CardTitle className="font-semibold text-lg">{tech.category}</CardTitle>
+                <CardTitle className="text-lg font-semibold">{tech.category}</CardTitle>
               </CardHeader>
               <CardContent className="flex-1">
                 <CardDescription className="mb-4">{tech.description}</CardDescription>
@@ -266,7 +283,7 @@ function LandingPage() {
 
         <section className="mt-16 md:mt-24">
           <div className="mb-12 text-center md:mb-16">
-            <h2 className="mb-4 font-bold text-3xl tracking-tight sm:text-4xl md:text-5xl">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               Robust Authentication Included
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
@@ -334,7 +351,7 @@ function LandingPage() {
       </main>
 
       <footer className="mt-16 border-t">
-        <div className="container py-6 text-center text-muted-foreground text-sm">
+        <div className="container py-6 text-center text-sm text-muted-foreground">
           Built with Modern Tech. &copy; {new Date().getFullYear()} Your Company/Name.
         </div>
       </footer>

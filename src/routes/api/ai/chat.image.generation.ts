@@ -1,6 +1,5 @@
 import { openai } from "@ai-sdk/openai";
 import { createFileRoute } from "@tanstack/react-router";
-
 import {
   convertToModelMessages,
   experimental_generateImage as generateImage,

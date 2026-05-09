@@ -1,14 +1,24 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InvitationError } from "@/features/organization/invitation-error";
 import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
 
-export const Route = createFileRoute("/(auth)/accept-invitation/$invitationId/")({
+export const Route = createFileRoute(
+  "/(auth)/accept-invitation/$invitationId/",
+)({
   component: RouteComponent,
 });
 
@@ -16,7 +26,9 @@ function RouteComponent() {
   const { t } = useTranslation();
   const params = Route.useParams();
   const router = useRouter();
-  const [invitationStatus, setInvitationStatus] = useState<"pending" | "accepted" | "rejected">("pending");
+  const [invitationStatus, setInvitationStatus] = useState<
+    "pending" | "accepted" | "rejected"
+  >("pending");
 
   const handleAccept = async () => {
     await authClient.organization
@@ -76,7 +88,7 @@ function RouteComponent() {
           setInvitation(res.data);
         }
       });
-  }, []);
+  }, [params.invitationId]);
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center">
@@ -95,7 +107,8 @@ function RouteComponent() {
                   <strong>{invitation?.organizationName}</strong>.
                 </p>
                 <p>
-                  {t("INVITATION_SENT_TO")} <strong>{invitation?.email}</strong>.
+                  {t("INVITATION_SENT_TO")} <strong>{invitation?.email}</strong>
+                  .
                 </p>
               </div>
             )}
@@ -104,7 +117,7 @@ function RouteComponent() {
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
                   <CheckIcon className="h-8 w-8 text-green-600" />
                 </div>
-                <h2 className="text-center font-bold text-2xl">
+                <h2 className="text-center text-2xl font-bold">
                   {t("WELCOME_TO")} {invitation?.organizationName}!
                 </h2>
                 <p className="text-center">{t("JOIN_SUCCESS")}</p>
@@ -115,7 +128,9 @@ function RouteComponent() {
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                   <XIcon className="h-8 w-8 text-red-600" />
                 </div>
-                <h2 className="text-center font-bold text-2xl">{t("INVITATION_DECLINED")}</h2>
+                <h2 className="text-center text-2xl font-bold">
+                  {t("INVITATION_DECLINED")}
+                </h2>
                 <p className="text-center">
                   {t("DECLINED_MESSAGE")} {invitation?.organizationName}.
                 </p>
@@ -124,7 +139,7 @@ function RouteComponent() {
           </CardContent>
           {invitationStatus === "pending" && (
             <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={handleReject}>
+              <Button onClick={handleReject} variant="outline">
                 {t("DECLINE")}
               </Button>
               <Button onClick={handleAccept}>{t("ACCEPT_INVITATION")}</Button>

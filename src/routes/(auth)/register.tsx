@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+
 import { SignUpForm } from "@/features/auth/sign-up-form";
 import { useTranslation } from "@/lib/intl/react";
 
@@ -14,7 +15,7 @@ function RouteComponent() {
       <SignUpForm />
       <div className="mt-4 text-center">
         {t("ALREADY_HAVE_ACCOUNT")}{" "}
-        <Link to="/login" className="underline">
+        <Link className="underline" to="/login">
           {t("LOG_IN")}
         </Link>
         !

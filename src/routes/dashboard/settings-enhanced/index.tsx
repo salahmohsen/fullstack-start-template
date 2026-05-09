@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,17 +17,19 @@ function EnhancedSettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6 py-6">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings and set e-mail preferences.</p>
+        <p className="text-muted-foreground">
+          Manage your account settings and set e-mail preferences.
+        </p>
       </div>
 
       <Separator />
 
       {/* Settings Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs className="space-y-6" onValueChange={setActiveTab} value={activeTab}>
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="account">Account</TabsTrigger>
@@ -34,7 +37,7 @@ function EnhancedSettingsPage() {
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="profile" className="space-y-6">
+        <TabsContent className="space-y-6" value="profile">
           <Card>
             <CardHeader>
               <CardTitle>Profile</CardTitle>
@@ -46,11 +49,13 @@ function EnhancedSettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="account" className="space-y-6">
+        <TabsContent className="space-y-6" value="account">
           <Card>
             <CardHeader>
               <CardTitle>Account Security</CardTitle>
-              <CardDescription>Manage your account security and authentication settings.</CardDescription>
+              <CardDescription>
+                Manage your account security and authentication settings.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <SecuritySettings />
@@ -58,12 +63,13 @@ function EnhancedSettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="appearance" className="space-y-6">
+        <TabsContent className="space-y-6" value="appearance">
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
               <CardDescription>
-                Customize the appearance of the app. Automatically switch between day and night themes.
+                Customize the appearance of the app. Automatically switch between day and night
+                themes.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -72,7 +78,7 @@ function EnhancedSettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="notifications" className="space-y-6">
+        <TabsContent className="space-y-6" value="notifications">
           <Card>
             <CardHeader>
               <CardTitle>Notifications</CardTitle>

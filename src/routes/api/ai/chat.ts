@@ -1,6 +1,5 @@
 import { openai } from "@ai-sdk/openai";
 import { createFileRoute } from "@tanstack/react-router";
-
 import { convertToModelMessages, streamText } from "ai";
 
 // Allow streaming responses up to 30 seconds
