@@ -10,3 +10,4 @@ dist-ssr
 .tanstack
 .nitro
 .worktrees
+*.playwright-mcp
