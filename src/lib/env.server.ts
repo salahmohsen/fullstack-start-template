@@ -6,9 +6,12 @@ config();
 
 export const env = createEnv({
   server: {
-    NODE_ENV: z.enum(["production", "development"]).optional().default("development"),
-    SERVER_URL: z.string().url().optional().default("http://localhost:3000"),
-    DATABASE_URL: z.string().url(),
+    NODE_ENV: z
+      .enum(["production", "development"])
+      .optional()
+      .default("development"),
+    SERVER_URL: z.url().optional().default("http://localhost:3000"),
+    DATABASE_URL: z.url(),
     RESEND_API_KEY: z.string().optional(),
     BETTER_AUTH_SECRET: z.string().optional(),
     OPENAI_API_KEY: z.string().optional(),
