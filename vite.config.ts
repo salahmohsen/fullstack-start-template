@@ -10,15 +10,6 @@ import type { PluginOption } from "vite";
 import { postgres } from "vite-plugin-neon-new";
 import { defineConfig, type UserConfig } from "vite-plus";
 
-// const require = createRequire(import.meta.url);
-
-// const { postgres } = require('vite-plugin-neon-new') as {
-//   postgres: (options: {
-//     referrer: string;
-//     seed?: { type: string; path: string };
-//   }) => PluginOption;
-// };
-
 dotenv.config();
 
 const plugins: PluginOption[] = [
@@ -181,8 +172,7 @@ export default defineConfig({
   run: {
     tasks: {
       build: {
-        // When deploying, use `vp run build` as the build command, not `vp build`
-        command: "vp build",
+        command: "SENTRY_LOG_LEVEL=debug vp build",
         env: ["NODE_ENV", "VITE_*"],
         input: [
           { auto: true },
