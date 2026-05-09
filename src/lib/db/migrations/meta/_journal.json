@@ -5,43 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1745339738774,
-      "tag": "0000_slim_scarlet_spider",
+      "when": 1778291353641,
+      "tag": "0000_clever_nitro",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1745346721839,
-      "tag": "0001_worthless_clea",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1745397788841,
-      "tag": "0002_fluffy_scourge",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1745397936833,
-      "tag": "0003_past_molten_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1748181796969,
-      "tag": "0004_steep_norrin_radd",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1751446125605,
-      "tag": "0005_superb_omega_sentinel",
+      "when": 1778295904389,
+      "tag": "0001_certain_white_queen",
       "breakpoints": true
     }
   ]

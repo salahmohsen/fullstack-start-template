@@ -1,6 +1,7 @@
-import { db } from "../src/lib/db/index.js";
-import { sql } from "drizzle-orm";
 import { config } from "dotenv";
+import { sql } from "drizzle-orm";
+
+import { db } from "../src/lib/db/index.js";
 
 // Load environment variables
 config();
@@ -8,32 +9,33 @@ config();
 async function setupVectorExtension() {
   try {
     console.log("🚀 Setting up vector extension...");
-    
+
     // Check if vector extension is already enabled
     const extensionCheck = await db.execute(sql`
       SELECT EXISTS(
         SELECT 1 FROM pg_extension WHERE extname = 'vector'
       ) as extension_exists;
     `);
-    
+
     const result = extensionCheck.rows[0] as { extension_exists: boolean };
     if (result.extension_exists) {
       console.log("✅ Vector extension is already enabled!");
       return;
     }
-    
+
     // Enable vector extension
     await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector;`);
-    
+
     console.log("✅ Vector extension has been successfully enabled!");
     console.log("📝 Your database is now ready for vector operations and embeddings.");
-    
   } catch (error) {
     console.error("❌ Failed to setup vector extension:");
-    
+
     if (error instanceof Error) {
       if (error.message.includes("permission denied")) {
-        console.error("Permission denied. Make sure your database user has the necessary privileges.");
+        console.error(
+          "Permission denied. Make sure your database user has the necessary privileges.",
+        );
         console.log("\n📋 Manual Setup Instructions:");
         console.log("1. Open your Neon dashboard");
         console.log("2. Navigate to SQL Editor");
@@ -52,7 +54,7 @@ async function setupVectorExtension() {
         console.error(error.message);
       }
     }
-    
+
     process.exit(1);
   }
 }
@@ -61,4 +63,4 @@ async function setupVectorExtension() {
 setupVectorExtension().catch((error) => {
   console.error("❌ Unexpected error:", error);
   process.exit(1);
-}); 
+});
