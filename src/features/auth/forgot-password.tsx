@@ -1,22 +1,26 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import * as z from "zod";
+
+import { useAppForm } from "@/components/forms";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthHelpers } from "@/features/auth/auth-hooks";
 import { useTranslation } from "@/lib/intl/react";
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
 });
 
 export default function ForgotPasswordForm() {
@@ -24,27 +28,22 @@ export default function ForgotPasswordForm() {
   const { forgotPassword } = useAuthHelpers();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const form = useForm({
-    resolver: zodResolver(forgotPasswordSchema),
+  const form = useAppForm({
     defaultValues: {
       email: "",
     },
+    validators: {
+      onChange: forgotPasswordSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await forgotPassword.mutateAsync({ email: value.email });
+        setIsSubmitted(true);
+      } catch {
+        // error handled by mutation
+      }
+    },
   });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = form;
-
-  const onSubmit = async (data: z.infer<typeof forgotPasswordSchema>) => {
-    try {
-      await forgotPassword.mutateAsync({ email: data.email });
-      setIsSubmitted(true);
-    } catch (err) {
-      // Error handling is done via form validation
-    }
-  };
 
   if (isSubmitted) {
     return (
@@ -61,8 +60,14 @@ export default function ForgotPasswordForm() {
             </Alert>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" onClick={() => setIsSubmitted(false)} variant="outline">
-              <ArrowLeft className="mr-2 h-4 w-4" /> {t("BACK_TO_RESET")}
+            <Button
+              className="w-full"
+              onClick={() => setIsSubmitted(false)}
+              type="button"
+              variant="outline"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {t("BACK_TO_RESET")}
             </Button>
           </CardFooter>
         </Card>
@@ -78,21 +83,37 @@ export default function ForgotPasswordForm() {
           <CardDescription>{t("FORGOT_PASSWORD_DESC")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FieldSet>
-              <Field>
-                <FieldLabel htmlFor="email">{t("EMAIL")}</FieldLabel>
-                <InputGroup>
-                  <InputGroupInput id="email" placeholder={t("ENTER_EMAIL")} type="email" {...register("email")} />
-                </InputGroup>
-                <FieldError errors={errors.email} />
-              </Field>
-            </FieldSet>
-            <ButtonGroup>
-              <Button className="mt-4 w-full" disabled={isSubmitting} type="submit">
-                {isSubmitting ? <Spinner size="sm" /> : t("SEND_RESET_LINK")}
-              </Button>
-            </ButtonGroup>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              void form.handleSubmit();
+            }}
+          >
+            <form.AppField name="email">
+              {(field) => (
+                <field.InputField
+                  autoComplete="email"
+                  label={t("EMAIL")}
+                  placeholder={t("ENTER_EMAIL")}
+                  type="email"
+                />
+              )}
+            </form.AppField>
+
+            <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+              {([canSubmit, isSubmitting]) => (
+                <ButtonGroup>
+                  <Button
+                    className="mt-4 w-full"
+                    disabled={!canSubmit || forgotPassword.isPending || isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting || forgotPassword.isPending ? <Spinner /> : t("SEND_RESET_LINK")}
+                  </Button>
+                </ButtonGroup>
+              )}
+            </form.Subscribe>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">

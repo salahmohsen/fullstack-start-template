@@ -1,15 +1,18 @@
-import { createAccessControl } from 'better-auth/plugins/access';
+import {
+  createAccessControl,
+  type Statements,
+} from 'better-auth/plugins/access';
 import { adminAc, defaultStatements } from 'better-auth/plugins/admin/access';
 
 // Define custom statements for our application
-export const statement = {
+export const statements = {
   ...defaultStatements,
   project: ['create', 'read', 'update', 'delete', 'share'],
   billing: ['read', 'update', 'manage'],
-} as const;
+} as Statements;
 
 // Create access control instance
-const ac = createAccessControl(statement);
+const ac = createAccessControl(statements);
 
 // Define roles with specific permissions
 export const user = ac.newRole({
@@ -56,6 +59,10 @@ export function canSetUserRoles(role: UserRole): boolean {
   return role === 'admin' || role === 'superadmin';
 }
 
+export function canResetUserPassword(role: UserRole): boolean {
+  return role === 'admin' || role === 'superadmin';
+}
+
 // Get available roles that a user can assign based on their own role
 export function getAssignableRoles(currentUserRole: UserRole): UserRole[] {
   switch (currentUserRole) {
@@ -71,7 +78,10 @@ export function getAssignableRoles(currentUserRole: UserRole): UserRole[] {
 }
 
 // Check if a user can assign a specific role
-export function canAssignRole(currentUserRole: UserRole, targetRole: UserRole): boolean {
+export function canAssignRole(
+  currentUserRole: UserRole,
+  targetRole: UserRole,
+): boolean {
   const assignableRoles = getAssignableRoles(currentUserRole);
   return assignableRoles.includes(targetRole);
 }
@@ -105,8 +115,8 @@ export function getUserPermissions(role: UserRole) {
 // Check if user has specific permission
 export function hasPermission(
   userRole: UserRole,
-  resource: keyof typeof statement,
-  action: (typeof statement)[keyof typeof statement][number]
+  resource: keyof typeof statements,
+  action: (typeof statements)[keyof typeof statements][number],
 ): boolean {
   const permissions = getUserPermissions(userRole);
 
@@ -115,6 +125,8 @@ export function hasPermission(
     return false;
   }
 
-  const resourceActions = permissions[resource as keyof typeof permissions] as readonly string[] | undefined;
+  const resourceActions = permissions[resource as keyof typeof permissions] as
+    | readonly string[]
+    | undefined;
   return Boolean(resourceActions?.includes(action));
 }

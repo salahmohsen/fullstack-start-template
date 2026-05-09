@@ -2,7 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import type { ErrorContext } from "better-auth/react";
 import type { SocialProvider } from "better-auth/social-providers";
+
 import { authClient } from "@/lib/auth/auth-client";
+import { queryOptions } from "@tanstack/react-query";
 
 const authQueryKeys = {
   session: ["session"],
@@ -13,10 +15,24 @@ export const useSession = () => {
   return session;
 };
 
+export const activeSessionsQueryOptions = queryOptions({
+  queryFn: async () => await authClient.listSessions(),
+  queryKey: ["active-sessions"],
+  select: (data) => data.data ?? [],
+});
+
 export const useLogin = () => {
   const router = useRouter();
   const loginWithCredentials = useMutation({
-    mutationFn: async ({ email, password, rememberMe }: { email: string; password: string; rememberMe: boolean }) => {
+    mutationFn: async ({
+      email,
+      password,
+      rememberMe,
+    }: {
+      email: string;
+      password: string;
+      rememberMe: boolean;
+    }) => {
       const result = await authClient.signIn.email({
         email,
         password,
@@ -43,7 +59,9 @@ export const useLogin = () => {
     mutationFn: async () => {
       const result = await authClient.signIn.passkey();
       if (result?.error) {
-        throw new Error(result.error.message || "Passkey authentication failed");
+        throw new Error(
+          result.error.message || "Passkey authentication failed",
+        );
       }
       return result;
     },
@@ -56,7 +74,13 @@ export const useLogin = () => {
   });
 
   const loginWithSocial = useMutation({
-    mutationFn: async ({ provider, callbackURL }: { provider: SocialProvider; callbackURL: string }) => {
+    mutationFn: async ({
+      provider,
+      callbackURL,
+    }: {
+      provider: SocialProvider;
+      callbackURL: string;
+    }) => {
       const result = await authClient.signIn.social({
         provider,
         callbackURL: callbackURL || "/dashboard",
@@ -100,7 +124,15 @@ export const useRegister = ({
   onError: (error: ErrorContext) => void;
 }) =>
   useMutation({
-    mutationFn: async ({ email, password, name }: { email: string; password: string; name: string }) =>
+    mutationFn: async ({
+      email,
+      password,
+      name,
+    }: {
+      email: string;
+      password: string;
+      name: string;
+    }) =>
       await authClient.signUp.email(
         { email, password, name },
         {
@@ -110,14 +142,17 @@ export const useRegister = ({
           onError: (error: ErrorContext) => {
             onError(error);
           },
-        }
+        },
       ),
   });
 
 export const useAuthHelpers = () => {
   const forgotPassword = useMutation({
     mutationFn: async ({ email }: { email: string }) =>
-      await authClient.forgetPassword({ email, redirectTo: "/reset-password" }),
+      await authClient.requestPasswordReset({
+        email,
+        redirectTo: "/reset-password",
+      }),
   });
 
   const sendOtp = useMutation({
@@ -125,16 +160,23 @@ export const useAuthHelpers = () => {
   });
 
   const verifyOtp = useMutation({
-    mutationFn: async ({ code }: { code: string }) => await authClient.twoFactor.verifyOtp({ code }),
+    mutationFn: async ({ code }: { code: string }) =>
+      await authClient.twoFactor.verifyOtp({ code }),
   });
 
   const resetPassword = useMutation({
-    mutationFn: async ({ newPassword, token }: { newPassword: string; token: string }) =>
-      await authClient.resetPassword({ newPassword, token }),
+    mutationFn: async ({
+      newPassword,
+      token,
+    }: {
+      newPassword: string;
+      token: string;
+    }) => await authClient.resetPassword({ newPassword, token }),
   });
 
   const verifyTwoFactor = useMutation({
-    mutationFn: async ({ code }: { code: string }) => await authClient.twoFactor.verifyTotp({ code }),
+    mutationFn: async ({ code }: { code: string }) =>
+      await authClient.twoFactor.verifyTotp({ code }),
   });
 
   const getTotpUri = useMutation({
@@ -151,7 +193,9 @@ export const useAuthHelpers = () => {
     mutationFn: async ({ password }: { password: string }) => {
       const result = await authClient.twoFactor.enable({ password });
       if (result.error) {
-        throw new Error(result.error.message || "Failed to enable two-factor authentication");
+        throw new Error(
+          result.error.message || "Failed to enable two-factor authentication",
+        );
       }
       return result;
     },
@@ -161,7 +205,9 @@ export const useAuthHelpers = () => {
     mutationFn: async ({ password }: { password: string }) => {
       const result = await authClient.twoFactor.disable({ password });
       if (result.error) {
-        throw new Error(result.error.message || "Failed to disable two-factor authentication");
+        throw new Error(
+          result.error.message || "Failed to disable two-factor authentication",
+        );
       }
       return result;
     },
@@ -178,15 +224,19 @@ export const useAuthHelpers = () => {
   });
 
   const sendVerificationEmail = useMutation({
-    mutationFn: async ({ email }: { email: string }) => await authClient.sendVerificationEmail({ email }),
+    mutationFn: async ({ email }: { email: string }) =>
+      await authClient.sendVerificationEmail({ email }),
   });
 
   const verifyEmail = useMutation({
-    mutationFn: async ({ token }: { token: string }) => await authClient.verifyEmail({ query: { token } }),
+    mutationFn: async ({ token }: { token: string }) =>
+      await authClient.verifyEmail({ query: { token } }),
   });
 
   const revokeSession = useMutation({
-    mutationFn: async ({ token }: { token: string }) => await authClient.revokeSession({ token }),
+    mutationFn: async ({ token }: { token: string }) =>
+      await authClient.revokeSession({ token }),
+    mutationKey: ["active-sessions"],
   });
 
   const signOut = useMutation({

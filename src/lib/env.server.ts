@@ -6,12 +6,16 @@ config();
 
 export const env = createEnv({
   server: {
+    NODE_ENV: z.enum(["production", "development"]).optional().default("development"),
     SERVER_URL: z.string().url().optional().default("http://localhost:3000"),
     DATABASE_URL: z.string().url(),
-    RESEND_API_KEY: z.string(),
-    BETTER_AUTH_SECRET: z.string(),
-    OPENAI_API_KEY: z.string(),
-    ANTHROPIC_API_KEY: z.string(),
+    RESEND_API_KEY: z.string().optional(),
+    BETTER_AUTH_SECRET: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
+    ANTHROPIC_API_KEY: z.string().optional(),
+    EMAIL: z.email().optional(),
+    TEST_EMAIL: z.email().optional(),
+    TEST_EMAIL_PASSWORD: z.string().optional(),
   },
 
   /**

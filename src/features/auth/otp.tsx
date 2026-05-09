@@ -1,21 +1,23 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "@tanstack/react-router";
 import { AlertCircle, CheckCircle2, Mail } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod";
+
+import { useAppForm } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthHelpers } from "@/features/auth/auth-hooks";
 import { useTranslation } from "@/lib/intl/react";
 
 const otpSchema = z.object({
-  otp: z.string().length(6, "OTP must be exactly 6 digits").regex(/^\d+$/, "OTP must contain only digits"),
+  otp: z
+    .string()
+    .length(6, "OTP must be exactly 6 digits")
+    .regex(/^\d+$/, "OTP must contain only digits"),
 });
 
 export default function Component() {
@@ -30,38 +32,33 @@ export default function Component() {
   // In a real app, this email would come from your authentication context
   const userEmail = "user@example.com";
 
-  const form = useForm({
-    resolver: zodResolver(otpSchema),
+  const form = useAppForm({
     defaultValues: {
       otp: "",
     },
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = form;
-
-  const onSubmit = async (data: z.infer<typeof otpSchema>) => {
-    try {
-      const res = await verifyOtp.mutateAsync({
-        code: data.otp,
-      });
-      if (res.data) {
-        setMessage(t("OTP_VALIDATED"));
-        setIsError(false);
-        setIsValidated(true);
-        router.navigate({ to: "/" });
-      } else {
+    validators: {
+      onChange: otpSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const res = await verifyOtp.mutateAsync({
+          code: value.otp,
+        });
+        if (res.data) {
+          setMessage(t("OTP_VALIDATED"));
+          setIsError(false);
+          setIsValidated(true);
+          router.navigate({ to: "/" });
+        } else {
+          setIsError(true);
+          setMessage(t("INVALID_OTP"));
+        }
+      } catch {
         setIsError(true);
         setMessage(t("INVALID_OTP"));
       }
-    } catch (error) {
-      setIsError(true);
-      setMessage(t("INVALID_OTP"));
-    }
-  };
+    },
+  });
 
   const requestOTP = async () => {
     await sendOtp.mutateAsync();
@@ -79,26 +76,52 @@ export default function Component() {
         <CardContent>
           <div className="grid w-full items-center gap-4">
             {isOtpSent ? (
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  form.handleSubmit();
+                }}
+              >
                 <FieldSet>
-                  <Field>
-                    <FieldLabel htmlFor="otp">{t("ONE_TIME_PASSWORD")}</FieldLabel>
-                    <FieldContent>
-                      <p className="py-2 text-muted-foreground text-sm">
-                        {t("CHECK_EMAIL_OTP")} {userEmail}
-                      </p>
-                      <InputGroup>
-                        <InputGroupInput id="otp" placeholder={t("ENTER_6_DIGIT")} type="text" {...register("otp")} />
-                      </InputGroup>
-                    </FieldContent>
-                    <FieldError errors={errors.otp} />
-                  </Field>
+                  <form.AppField name="otp">
+                    {(field) => (
+                      <Field>
+                        <FieldLabel htmlFor={field.name}>{t("ONE_TIME_PASSWORD")}</FieldLabel>
+                        <FieldContent>
+                          <p className="py-2 text-sm text-muted-foreground">
+                            {t("CHECK_EMAIL_OTP")} {userEmail}
+                          </p>
+                          <InputGroup>
+                            <InputGroupInput
+                              id={field.name}
+                              name={field.name}
+                              onBlur={field.handleBlur}
+                              onChange={(event) => field.handleChange(event.target.value)}
+                              placeholder={t("ENTER_6_DIGIT")}
+                              type="text"
+                              value={field.state.value}
+                            />
+                          </InputGroup>
+                        </FieldContent>
+                        <FieldError errors={field.state.meta.errors} />
+                      </Field>
+                    )}
+                  </form.AppField>
                 </FieldSet>
-                <ButtonGroup>
-                  <Button className="mt-4 w-full" disabled={isSubmitting || isValidated} type="submit">
-                    {isSubmitting ? <Spinner size="sm" /> : t("VALIDATE_OTP")}
-                  </Button>
-                </ButtonGroup>
+                <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                  {([canSubmit, isSubmitting]) => (
+                    <ButtonGroup>
+                      <Button
+                        className="mt-4 w-full"
+                        disabled={!canSubmit || isSubmitting || isValidated}
+                        type="submit"
+                      >
+                        {isSubmitting ? <Spinner /> : t("VALIDATE_OTP")}
+                      </Button>
+                    </ButtonGroup>
+                  )}
+                </form.Subscribe>
               </form>
             ) : (
               <Button className="w-full" onClick={requestOTP}>
@@ -107,7 +130,9 @@ export default function Component() {
             )}
           </div>
           {message && (
-            <div className={`mt-4 flex items-center gap-2 ${isError ? "text-red-500" : "text-primary"}`}>
+            <div
+              className={`mt-4 flex items-center gap-2 ${isError ? "text-red-500" : "text-primary"}`}
+            >
               {isError ? <AlertCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
               <p className="text-sm">{message}</p>
             </div>

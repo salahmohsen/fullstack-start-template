@@ -1,10 +1,11 @@
-import { useForm } from "@tanstack/react-form";
 import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import * as z from "zod";
-import { PasswordField } from "@/components/form/password-field";
+
+import { useAppForm } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
 
@@ -22,36 +23,32 @@ export default function ResetPasswordForm() {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
     validators: {
-      onChange: ({ value }) => {
-        const result = resetPasswordSchema.safeParse(value);
-        if (!result.success) {
-          return result.error.formErrors.fieldErrors;
-        }
-        return undefined;
-      },
+      onChange: resetPasswordSchema,
     },
     onSubmit: async ({ value }) => {
       try {
         const res = await authClient.resetPassword({
           newPassword: value.password,
-          token: new URLSearchParams(window.location.search).get("token")!,
+          token: new URLSearchParams(window.location.search).get("token") ?? "",
         });
+        console.log("resetPassword", res);
         if (res.error) {
           toast.error(res.error.message);
         } else {
-          router.navigate({ to: "/login" });
+          await router.navigate({ to: "/login" });
         }
-      } catch (error) {
+      } catch {
         toast.error("An error occurred during password reset");
       }
     },
   });
+
   return (
     <div className="flex min-h-[calc(100vh-10rem)] flex-col items-center justify-center">
       <Card className="w-[350px]">
@@ -61,38 +58,40 @@ export default function ResetPasswordForm() {
         </CardHeader>
         <CardContent>
           <form
+            className="grid gap-4"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              form.handleSubmit();
+              void form.handleSubmit();
             }}
           >
-            <div className="grid w-full items-center gap-2">
-              <div className="flex flex-col space-y-1.5">
-                <form.Field
-                  name="password"
-                  children={(field) => (
-                    <PasswordField field={field} label={t("NEW_PASSWORD")} placeholder={t("PASSWORD")} />
-                  )}
+            <form.AppField name="password">
+              {(field) => (
+                <field.PasswordField
+                  autoComplete="new-password"
+                  label={t("NEW_PASSWORD")}
+                  placeholder={t("PASSWORD")}
                 />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <form.Field
-                  name="confirmPassword"
-                  children={(field) => (
-                    <PasswordField field={field} label={t("CONFIRM_NEW_PASSWORD")} placeholder={t("PASSWORD")} />
-                  )}
+              )}
+            </form.AppField>
+
+            <form.AppField name="confirmPassword">
+              {(field) => (
+                <field.PasswordField
+                  autoComplete="new-password"
+                  label={t("CONFIRM_NEW_PASSWORD")}
+                  placeholder={t("PASSWORD")}
                 />
-              </div>
-            </div>
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-              children={([canSubmit, isSubmitting]) => (
-                <Button className="mt-4 w-full" type="submit" disabled={!canSubmit || isSubmitting}>
-                  {isSubmitting ? t("RESETTING") : t("RESET_PASSWORD_BUTTON")}
+              )}
+            </form.AppField>
+
+            <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+              {([canSubmit, isSubmitting]) => (
+                <Button className="w-full" disabled={!canSubmit || isSubmitting} type="submit">
+                  {isSubmitting ? <Spinner /> : t("RESET_PASSWORD_BUTTON")}
                 </Button>
               )}
-            />
+            </form.Subscribe>
           </form>
         </CardContent>
       </Card>

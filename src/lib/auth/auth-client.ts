@@ -1,18 +1,25 @@
+import { passkeyClient } from "@better-auth/passkey/client";
 import {
   adminClient,
   emailOTPClient,
   magicLinkClient,
   multiSessionClient,
   organizationClient,
-  passkeyClient,
   twoFactorClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-import { env } from "@/lib/env.client";
-import { ac, admin as adminRole, superadmin as superAdminRole, user as userRole } from "./permissions";
+
+import { resolveAuthBaseUrl } from "@/lib/auth/auth-base-url";
+
+import {
+  ac,
+  admin as adminRole,
+  superadmin as superAdminRole,
+  user as userRole,
+} from "./permissions";
 
 export const authClient = createAuthClient({
-  baseURL: env.VITE_SERVER_URL,
+  baseURL: resolveAuthBaseUrl(import.meta.env.VITE_SERVER_URL, globalThis.location?.origin),
   plugins: [
     twoFactorClient(),
     passkeyClient(),
