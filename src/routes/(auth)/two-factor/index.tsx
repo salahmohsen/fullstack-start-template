@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import TwoFactorForm from "@/features/auth/two-factor";
+import { TwoFactorForm } from "@/features/auth/two-factor";
 import { useTranslation } from "@/lib/intl/react";
+import { authMiddleware } from "@/lib/auth/auth-middleware";
 
 export const Route = createFileRoute("/(auth)/two-factor/")({
   component: RouteComponent,
+  server: {
+    middleware: [authMiddleware],
+  },
 });
 
 function RouteComponent() {

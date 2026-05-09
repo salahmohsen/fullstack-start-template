@@ -1,24 +1,34 @@
+import { auth } from "@/lib/auth/auth";
 import { createMiddleware } from "@tanstack/react-start";
-import { getHeaders } from "@tanstack/react-start/server";
+import { redirect } from "@tanstack/react-router";
 
-import { authClient } from "@/lib/auth/auth-client";
+export const isAuthRoute = (path: string) =>
+  ["/login", "/register", "/two-factor"].includes(path);
 
-export const authMiddleware = createMiddleware({
-  type: "request",
-  validateClient: false,
-}).server(async ({ next }) => {
-  const { data: session } = await authClient.getSession({
-    fetchOptions: {
-      headers: getHeaders() as HeadersInit,
-    },
-  });
-  return await next({
-    context: {
-      user: {
-        id: session?.user.id,
-        name: session?.user.name,
-        image: session?.user.image,
+export const authMiddleware = createMiddleware().server(
+  async ({ next, request }) => {
+    const session = await auth.api.getSession({ headers: request.headers });
+
+    const { pathname } = new URL(request.url);
+
+    if (session?.user) {
+      if (!isAuthRoute(pathname)) {
+        return await next();
+      }
+      if (isAuthRoute(pathname)) {
+        throw redirect({ to: "/dashboard" });
+      }
+    }
+    if (!session?.user && !isAuthRoute(pathname) && request.url !== "/") {
+      throw redirect({ to: "/login" });
+    }
+
+    return await next({
+      context: {
+        user: session?.user,
+        image: session?.user?.image,
+        session: session,
       },
-    },
-  });
-});
+    });
+  },
+);

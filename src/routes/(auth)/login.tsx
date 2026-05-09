@@ -2,9 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import SignInForm from "@/features/auth/sign-in-form";
 import { useTranslation } from "@/lib/intl/react";
+import { authMiddleware } from "@/lib/auth/auth-middleware";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: RouteComponent,
+  server: {
+    middleware: [authMiddleware],
+  },
 });
 function RouteComponent() {
   const { t } = useTranslation();
