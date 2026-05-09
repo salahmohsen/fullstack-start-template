@@ -2,6 +2,7 @@ import { openai } from "@ai-sdk/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { embed, embedMany } from "ai";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
+
 import { db } from "@/lib/db";
 import { embeddings } from "@/lib/db/schema/embeddings";
 
@@ -18,7 +19,9 @@ export const generateChunksBySplitter = async (input: string): Promise<string[]>
 
 const embeddingModel = openai.embedding("text-embedding-ada-002");
 
-export const generateEmbeddings = async (value: string): Promise<Array<{ embedding: number[]; content: string }>> => {
+export const generateEmbeddings = async (
+  value: string,
+): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = await generateChunksBySplitter(value);
   const { embeddings } = await embedMany({
     model: embeddingModel,

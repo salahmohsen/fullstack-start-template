@@ -2,6 +2,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ArrowUpIcon, StopCircleIcon } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -32,17 +33,17 @@ function ChatWelcome({ onSelectSuggestion }: { onSelectSuggestion: (suggestion: 
 
   return (
     <div className="mt-12 flex flex-col items-center justify-center space-y-6">
-      <h3 className="font-medium text-xl">How can I help you today?</h3>
+      <h3 className="text-xl font-medium">How can I help you today?</h3>
       <div className="grid w-full max-w-lg grid-cols-2 gap-3">
         {suggestions.map((suggestion) => (
           <button
-            key={suggestion.title}
-            type="button"
-            onClick={() => onSelectSuggestion(suggestion.prompt)}
             className="cursor-pointer rounded-lg border p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+            key={suggestion.title}
+            onClick={() => onSelectSuggestion(suggestion.prompt)}
+            type="button"
           >
             <p className="font-medium">{suggestion.title}</p>
-            <p className="text-gray-500 text-sm">{suggestion.description}</p>
+            <p className="text-sm text-gray-500">{suggestion.description}</p>
           </button>
         ))}
       </div>
@@ -102,45 +103,45 @@ export function Chat() {
       <div className="mx-auto mb-20 w-full max-w-2xl space-y-4 overflow-y-auto">
         {messages.length > 0 ? (
           messages.map((m) => (
-            <div key={m.id} className="whitespace-pre-wrap">
+            <div className="whitespace-pre-wrap" key={m.id}>
               <div key={m.id}>
                 <div className="font-bold">{m.role}</div>
-                                <div>
+                <div>
                   {m.parts.map((part, index) => {
                     console.log("🔑 Part", part);
-                    
+
                     if (part.type === "text") {
                       return <p key={index}>{part.text}</p>;
                     }
-                    
+
                     // Handle new v5 tool pattern - tools are prefixed with 'tool-'
                     if (part.type === "tool-generateImage") {
                       const toolPart = part as any; // Type assertion for tool part
                       const { toolCallId, state } = toolPart;
-                      
+
                       // Tool is completed and has output
                       if (state === "output-available" && toolPart.output) {
                         const output = toolPart.output as { image: string; prompt?: string };
                         const input = toolPart.input as { prompt?: string };
-                        
+
                         return (
                           <img
-                            key={toolCallId}
-                            src={`data:image/png;base64,${output.image}`}
                             alt={input?.prompt || "Generated image"}
-                            height={400}
-                            width={400}
-                            onLoad={scrollToBottom}
                             className="rounded-lg shadow-lg"
+                            height={400}
+                            key={toolCallId}
+                            onLoad={scrollToBottom}
+                            src={`data:image/png;base64,${output.image}`}
+                            width={400}
                           />
                         );
                       }
-                      
+
                       // Tool is still processing (input streaming, input available, etc.)
                       return (
-                        <div key={toolCallId} className="animate-pulse bg-gray-100 rounded-lg p-4">
+                        <div className="animate-pulse rounded-lg bg-gray-100 p-4" key={toolCallId}>
                           <div className="flex items-center space-x-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                            <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-500" />
                             <span className="text-gray-600">
                               {state === "input-streaming" && "Preparing image generation..."}
                               {state === "input-available" && "Starting image generation..."}
@@ -150,12 +151,12 @@ export function Chat() {
                         </div>
                       );
                     }
-                    
+
                     // Handle step indicators
                     if (part.type === "step-start") {
                       return null; // Don't render step indicators for cleaner UI
                     }
-                    
+
                     return null;
                   })}
                 </div>
@@ -168,18 +169,17 @@ export function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="relative flex w-full max-w-xl flex-col items-center justify-center">
+      <form
+        className="relative flex w-full max-w-xl flex-col items-center justify-center"
+        onSubmit={handleSubmit}
+      >
         <div className="fixed bottom-0 z-10 mb-8 w-full max-w-lg bg-background">
           <div className="relative flex flex-row items-center justify-between">
             <Textarea
-              data-testid="multimodal-input"
-              ref={textareaRef}
-              placeholder="Send a message..."
-              value={input}
-              onChange={handleInputChange}
-              className="w-full rounded border border-gray-300 p-2 pr-10 shadow-xl"
-              rows={1}
               autoFocus
+              className="w-full rounded border border-gray-300 p-2 pr-10 shadow-xl"
+              data-testid="multimodal-input"
+              onChange={handleInputChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -188,6 +188,10 @@ export function Chat() {
                   }
                 }
               }}
+              placeholder="Send a message..."
+              ref={textareaRef}
+              rows={1}
+              value={input}
             />
             <div className="absolute right-2">
               {status === "streaming" ? (
@@ -206,8 +210,8 @@ export function Chat() {
 function PureStopButton({ stop }: { stop: () => void }) {
   return (
     <Button
+      className="h-fit rounded-full border p-1.5 dark:border-zinc-600"
       data-testid="stop-button"
-      className="h-fit rounded-full border p-1.5 dark:border-zinc-600 "
       onClick={(event) => {
         event.preventDefault();
         stop();
@@ -231,13 +235,13 @@ function PureSendButton({
 }) {
   return (
     <Button
-      data-testid="send-button"
       className="h-fit rounded-full border p-1.5 dark:border-zinc-600"
+      data-testid="send-button"
+      disabled={!input || input.length === 0 || uploadQueue.length > 0}
       onClick={(event) => {
         event.preventDefault();
         submitForm(event as React.FormEvent);
       }}
-      disabled={!input || input.length === 0 || uploadQueue.length > 0}
     >
       <ArrowUpIcon size={14} />
     </Button>

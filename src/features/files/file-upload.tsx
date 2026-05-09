@@ -3,8 +3,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FileUp, Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useTRPC } from "@/lib/trpc/react";
 
@@ -39,7 +47,9 @@ export default function UploadComponent() {
     }
 
     const selectedFiles = Array.from(e.target.files || []);
-    const validFiles = selectedFiles.filter((file) => file.type === "application/pdf" && file.size <= 5 * 1024 * 1024);
+    const validFiles = selectedFiles.filter(
+      (file) => file.type === "application/pdf" && file.size <= 5 * 1024 * 1024,
+    );
     console.log(validFiles);
 
     if (validFiles.length !== selectedFiles.length) {
@@ -74,13 +84,13 @@ export default function UploadComponent() {
   return (
     <div
       className="sticky top-4 flex max-h-[calc(100vh-2rem)] min-h-[200px] w-full justify-center overflow-visible"
+      onDragEnd={() => setIsDragging(false)}
+      onDragExit={() => setIsDragging(false)}
+      onDragLeave={() => setIsDragging(false)}
       onDragOver={(e) => {
         e.preventDefault();
         setIsDragging(true);
       }}
-      onDragExit={() => setIsDragging(false)}
-      onDragEnd={() => setIsDragging(false)}
-      onDragLeave={() => setIsDragging(false)}
       onDrop={(e) => {
         e.preventDefault();
         setIsDragging(false);
@@ -93,10 +103,10 @@ export default function UploadComponent() {
       <AnimatePresence>
         {isDragging && (
           <motion.div
-            className="pointer-events-none fixed z-10 flex h-dvh w-dvw flex-col items-center justify-center gap-1 bg-zinc-100/90 dark:bg-zinc-900/90"
-            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            className="pointer-events-none fixed z-10 flex h-dvh w-dvw flex-col items-center justify-center gap-1 bg-zinc-100/90 dark:bg-zinc-900/90"
             exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
           >
             <div>Drag and drop files here</div>
             <div className="text-sm text-zinc-500 dark:text-zinc-400">{"(PDFs only)"}</div>
@@ -115,25 +125,27 @@ export default function UploadComponent() {
             </div>
           </div>
           <div className="space-y-2">
-            <CardTitle className="font-bold text-2xl">PDF Embeddings Generator</CardTitle>
-            <CardDescription className="text-base">Upload a PDF to generate embeddings for the content</CardDescription>
+            <CardTitle className="text-2xl font-bold">PDF Embeddings Generator</CardTitle>
+            <CardDescription className="text-base">
+              Upload a PDF to generate embeddings for the content
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmitWithFiles} className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmitWithFiles}>
             <div
               className={
-                "relative flex flex-col items-center justify-center rounded-lg border-2 border-muted-foreground/25 border-dashed p-6 transition-colors hover:border-muted-foreground/50"
+                "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 transition-colors hover:border-muted-foreground/50"
               }
             >
               <input
-                type="file"
-                onChange={handleFileChange}
                 accept="application/pdf"
                 className="absolute inset-0 cursor-pointer opacity-0"
+                onChange={handleFileChange}
+                type="file"
               />
               <FileUp className="mb-2 h-8 w-8 text-muted-foreground" />
-              <p className="text-center text-muted-foreground text-sm">
+              <p className="text-center text-sm text-muted-foreground">
                 {files.length > 0 ? (
                   <span className="font-medium text-foreground">{files[0].name}</span>
                 ) : (
@@ -142,7 +154,7 @@ export default function UploadComponent() {
               </p>
             </div>
             <div className="flex space-x-2">
-              <Button type="submit" className="flex-1" disabled={files.length === 0 || isPending}>
+              <Button className="flex-1" disabled={files.length === 0 || isPending} type="submit">
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -153,7 +165,7 @@ export default function UploadComponent() {
                 )}
               </Button>
               {files.length > 0 && (
-                <Button type="button" variant="outline" onClick={clearPDF} disabled={isPending}>
+                <Button disabled={isPending} onClick={clearPDF} type="button" variant="outline">
                   Clear
                 </Button>
               )}
@@ -163,15 +175,17 @@ export default function UploadComponent() {
         {title && (
           <CardFooter className="flex flex-col space-y-4">
             <div className="w-full space-y-1">
-              <div className="flex justify-between text-muted-foreground text-sm">
+              <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Progress</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <Progress value={progress} className="h-2" />
+              <Progress className="h-2" value={progress} />
             </div>
             <div className="w-full space-y-2">
               <div className="grid grid-cols-6 items-center space-x-2 text-sm sm:grid-cols-4">
-                <div className={`h-2 w-2 rounded-full ${isPending ? "animate-pulse bg-yellow-500/50" : "bg-muted"}`} />
+                <div
+                  className={`h-2 w-2 rounded-full ${isPending ? "animate-pulse bg-yellow-500/50" : "bg-muted"}`}
+                />
                 <span className="col-span-4 text-center text-muted-foreground sm:col-span-2">
                   {isPending ? "Analyzing PDF content..." : "Processing complete"}
                 </span>
@@ -181,7 +195,7 @@ export default function UploadComponent() {
         )}
         {content && (
           <CardContent className="mt-2 border-t pt-4">
-            <div className="mb-2 font-medium text-sm">Content Preview:</div>
+            <div className="mb-2 text-sm font-medium">Content Preview:</div>
             <div className="max-h-40 overflow-y-auto rounded border bg-muted/50 p-2 text-xs">
               {content.slice(0, 500)}
               {content.length > 500 && "..."}

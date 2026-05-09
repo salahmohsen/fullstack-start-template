@@ -1,32 +1,35 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDownIcon,
   Copy,
+  Loader2,
+  MailIcon,
   MailPlus,
   MoreHorizontal,
   PlusIcon,
-  RefreshCw,
-  Settings,
   Shield,
-  Trash2,
   UserMinus,
   Users,
   UserX,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { toast } from "sonner";
-import * as z from "zod";
-import CopyButton from "@/components/copy-button";
+import { z } from "zod";
+
+import { useAppForm } from "@/components/forms";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -37,23 +40,39 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from "@/components/ui/field";
+import { InputGroupAddon } from "@/components/ui/input-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { useSession } from "@/features/auth/auth-hooks";
 import {
+  useActiveOrganization,
   useCancelInvitation,
   useCreateOrganization,
   useInviteMember,
@@ -61,106 +80,287 @@ import {
   useRemoveMember,
   useSetActiveOrganization,
 } from "@/features/organization/organization-hooks";
-import type { AuthClient } from "@/lib/auth/auth-client";
-import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
-
-type ActiveOrganization = Awaited<ReturnType<typeof authClient.organization.getFullOrganization>>;
+import { convertImageToBase64 } from "@/lib/converters.utils";
 
 const inviteMemberSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
   role: z.enum(["admin", "member"], {
-    required_error: "Please select a role",
+    message: "Please select a role",
   }),
 });
 
-function InviteMemberDialog() {
+const createOrganisationSchema = z.object({
+  name: z
+    .string()
+    .regex(/^[A-Za-z]+(?: [A-Za-z]+)*$/, {
+      error: "Only letters with one space between words are allowed",
+    })
+    .min(1, { error: "Organisation name is required!" }),
+  slug: z.string().regex(/^[a-z-]+$/, {
+    message: "Only lowercase letters and hyphens (-) are allowed",
+  }),
+  logo: z.instanceof(File).or(z.undefined()),
+});
+
+function CreateOrganizationDialog({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  const createOrganisation = useCreateOrganization();
+  const form = useAppForm({
+    defaultValues: {
+      name: "",
+      slug: "",
+      logo: undefined,
+    } as z.infer<typeof createOrganisationSchema>,
+    validators: {
+      onChange: createOrganisationSchema,
+    },
+    onSubmit: async ({ value }) => {
+      createOrganisation.mutate(
+        {
+          name: value.name,
+          slug: value.slug,
+          logo: value.logo && (await convertImageToBase64(value.logo)),
+        },
+        {
+          onSuccess: () => {
+            toast.success("Organisation created successfully");
+            form.reset();
+            setOpen(false);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    },
+  });
+
+  return (
+    <Dialog onOpenChange={setOpen} open={open}>
+      <DialogTrigger render={<Button className="gap-2" size="sm" />}>
+        <PlusIcon size={16} />
+        Create Organization
+      </DialogTrigger>
+      <DialogContent className="w-11/12 sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Create Organization</DialogTitle>
+          <DialogDescription>Create New Organisation</DialogDescription>
+        </DialogHeader>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <FieldSet>
+            <form.AppField
+              name="name"
+              listeners={{
+                onChange: ({ value, fieldApi }) => {
+                  fieldApi.form.setFieldValue(
+                    "slug",
+                    value.trim().replace(/\s+/g, "-").toLowerCase().trim(),
+                  );
+                },
+              }}
+            >
+              {(field) => (
+                <field.InputGroupField
+                  label="Name"
+                  id={field.name}
+                  name={field.name}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="Enter organisation name"
+                  type="email"
+                  value={field.state.value}
+                />
+              )}
+            </form.AppField>
+            <form.Subscribe selector={(state) => state.values.name}>
+              {(name) => (
+                <form.AppField name="slug">
+                  {(field) => (
+                    <field.InputGroupField
+                      label="Slug"
+                      placeholder="Organisation slug"
+                      value={name.replaceAll(" ", "-").toLowerCase()}
+                      defaultValue={name.replaceAll(" ", "-").toLowerCase()}
+                      disabled
+                      readOnly
+                    />
+                  )}
+                </form.AppField>
+              )}
+            </form.Subscribe>
+          </FieldSet>
+        </form>
+        <DialogFooter>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          >
+            {([canSubmit, isSubmitting]) => (
+              <ButtonGroup>
+                <Button
+                  disabled={
+                    !canSubmit || isSubmitting || createOrganisation.isPending
+                  }
+                  onClick={() => {
+                    form.handleSubmit();
+                  }}
+                  type="button"
+                >
+                  {createOrganisation.isPending || isSubmitting ? (
+                    <Spinner />
+                  ) : (
+                    "Create Organisation"
+                  )}
+                </Button>
+              </ButtonGroup>
+            )}
+          </form.Subscribe>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function InviteMemberDialog({
+  organizationId,
+}: {
+  organizationId: string | undefined;
+}) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const inviteMember = useInviteMember();
 
-  const form = useForm({
-    resolver: zodResolver(inviteMemberSchema),
+  const form = useAppForm({
     defaultValues: {
       email: "",
       role: "member" as "admin" | "member",
     },
+    validators: {
+      onChange: inviteMemberSchema,
+    },
+    onSubmit: ({ value }) => {
+      inviteMember.mutate(
+        {
+          email: value.email,
+          role: value.role,
+          organizationId,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Member invited successfully");
+            form.reset();
+            setOpen(false);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    },
   });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = form;
-
-  const onSubmit = (data: z.infer<typeof inviteMemberSchema>) => {
-    inviteMember.mutate(
-      {
-        email: data.email,
-        role: data.role,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Member invited successfully");
-          reset();
-          setOpen(false);
-        },
-        onError: (error) => {
-          toast.error(error.message);
-        },
-      }
-    );
-  };
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button className="gap-2" size="sm">
-          <MailPlus size={16} />
-          Invite Member
-        </Button>
+      <DialogTrigger render={<Button className="gap-2" size="sm" />}>
+        <MailPlus size={16} />
+        Invite Member
       </DialogTrigger>
       <DialogContent className="w-11/12 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Invite Member</DialogTitle>
-          <DialogDescription>Send an invitation to join your organization</DialogDescription>
+          <DialogDescription>
+            Send an invitation to join your organization
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
           <FieldSet>
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <InputGroup>
-                <InputGroupInput id="email" placeholder="Enter email address" type="email" {...register("email")} />
-              </InputGroup>
-              <FieldError errors={errors.email} />
-            </Field>
-
-            <Field>
-              <FieldLabel>Role</FieldLabel>
-              <FieldContent>
-                <Select
-                  onValueChange={(value) => form.setValue("role", value as "admin" | "member")}
-                  value={form.watch("role")}
+            <form.AppField name="email">
+              {(field) => (
+                <field.InputGroupField
+                  label="Email"
+                  id={field.name}
+                  name={field.name}
+                  onBlur={field.handleBlur}
+                  onChange={(event) => field.handleChange(event.target.value)}
+                  placeholder="Enter email address"
+                  type="email"
+                  value={field.state.value}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="member">Member</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FieldContent>
-            </Field>
+                  <InputGroupAddon>
+                    <MailIcon />
+                  </InputGroupAddon>
+                </field.InputGroupField>
+              )}
+            </form.AppField>
+
+            <form.AppField name="role">
+              {(field) => (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Role</FieldLabel>
+                  <FieldContent>
+                    <Select
+                      onValueChange={(value) =>
+                        field.handleChange(value as "admin" | "member")
+                      }
+                      value={field.state.value}
+                    >
+                      <SelectTrigger id={field.name}>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="member">Member</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FieldContent>
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.AppField>
           </FieldSet>
         </form>
         <DialogFooter>
-          <ButtonGroup>
-            <Button disabled={isSubmitting || inviteMember.isPending} onClick={handleSubmit(onSubmit)} type="submit">
-              {inviteMember.isPending || isSubmitting ? <Spinner size="sm" /> : "Send Invitation"}
-            </Button>
-          </ButtonGroup>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          >
+            {([canSubmit, isSubmitting]) => (
+              <ButtonGroup>
+                <Button
+                  disabled={
+                    !canSubmit || isSubmitting || inviteMember.isPending
+                  }
+                  onClick={() => {
+                    form.handleSubmit();
+                  }}
+                  type="button"
+                >
+                  {inviteMember.isPending || isSubmitting ? (
+                    <Spinner />
+                  ) : (
+                    "Send Invitation"
+                  )}
+                </Button>
+              </ButtonGroup>
+            )}
+          </form.Subscribe>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -171,15 +371,17 @@ export function WorkspacePage() {
   const { t } = useTranslation();
   const { data: session } = useSession();
   const { data: organizations } = useOrganizations();
-  const { data: activeOrgData } = authClient.organization.useGetFullOrganization();
+  const { data: activeOrgData } = useActiveOrganization();
   const setActiveOrganization = useSetActiveOrganization();
   const removeMember = useRemoveMember();
   const cancelInvitation = useCancelInvitation();
+  const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false);
 
   const [isRevoking, setIsRevoking] = useState<string[]>([]);
 
-  const optimisticOrg = activeOrgData?.data;
-  const currentMember = optimisticOrg?.members?.find((member) => member.userId === session?.user.id);
+  const currentMember = activeOrgData?.members?.find(
+    (member) => member.userId === session?.user.id,
+  );
 
   const inviteVariants = {
     hidden: { opacity: 0, height: 0 },
@@ -188,10 +390,14 @@ export function WorkspacePage() {
   };
 
   const stats = {
-    totalMembers: optimisticOrg?.members?.length || 0,
-    pendingInvitations: optimisticOrg?.invitations?.filter((inv) => inv.status === "pending").length || 0,
+    totalMembers: activeOrgData?.members?.length || 0,
+    pendingInvitations:
+      activeOrgData?.invitations?.filter((inv) => inv.status === "pending")
+        .length || 0,
     adminMembers:
-      optimisticOrg?.members?.filter((member) => member.role === "admin" || member.role === "owner").length || 0,
+      activeOrgData?.members?.filter(
+        (member) => member.role === "admin" || member.role === "owner",
+      ).length || 0,
   };
 
   const handleRemoveMember = (memberId: string) => {
@@ -214,7 +420,7 @@ export function WorkspacePage() {
         onError: () => {
           setIsRevoking(isRevoking.filter((id) => id !== invitationId));
         },
-      }
+      },
     );
   };
 
@@ -229,16 +435,23 @@ export function WorkspacePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-bold text-3xl tracking-tight">Workspace</h1>
-          <p className="text-muted-foreground">Manage your organization members and invitations</p>
+          <h1 className="text-3xl font-bold tracking-tight">Workspace</h1>
+          <p className="text-muted-foreground">
+            Manage your organization members and invitations
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                <span className="mr-2">{optimisticOrg?.name || "Personal"}</span>
+            <DropdownMenuTrigger
+              render={<Button size="sm" variant="outline" />}
+              disabled={setActiveOrganization.isPending}
+            >
+              <span className="mr-2">{activeOrgData?.name || "Personal"}</span>
+              {setActiveOrganization.isPending ? (
+                <Spinner />
+              ) : (
                 <ChevronDownIcon className="h-4 w-4" />
-              </Button>
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
@@ -252,7 +465,7 @@ export function WorkspacePage() {
                 <DropdownMenuItem
                   key={org.id}
                   onClick={() => {
-                    if (org.id !== optimisticOrg?.id) {
+                    if (org.id !== activeOrgData?.id) {
                       setActiveOrganization.mutate({ organizationId: org.id });
                     }
                   }}
@@ -262,7 +475,13 @@ export function WorkspacePage() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          {optimisticOrg?.id && <InviteMemberDialog />}
+          {activeOrgData?.id && (
+            <InviteMemberDialog organizationId={activeOrgData?.id} />
+          )}
+          <CreateOrganizationDialog
+            open={isCreateOrgDialogOpen}
+            setOpen={setIsCreateOrgDialogOpen}
+          />
         </div>
       </div>
 
@@ -270,34 +489,36 @@ export function WorkspacePage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Total Members</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Members</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{stats.totalMembers}</div>
+            <div className="text-2xl font-bold">{stats.totalMembers}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Pending Invitations</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Invitations
+            </CardTitle>
             <MailPlus className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{stats.pendingInvitations}</div>
+            <div className="text-2xl font-bold">{stats.pendingInvitations}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Admins</CardTitle>
+            <CardTitle className="text-sm font-medium">Admins</CardTitle>
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="font-bold text-2xl">{stats.adminMembers}</div>
+            <div className="text-2xl font-bold">{stats.adminMembers}</div>
           </CardContent>
         </Card>
       </div>
 
-      {optimisticOrg?.id ? (
+      {activeOrgData?.id ? (
         <Tabs className="space-y-4" defaultValue="members">
           <TabsList>
             <TabsTrigger value="members">Members</TabsTrigger>
@@ -308,7 +529,9 @@ export function WorkspacePage() {
             <Card>
               <CardHeader>
                 <CardTitle>Organization Members</CardTitle>
-                <CardDescription>Manage your organization members and their roles</CardDescription>
+                <CardDescription>
+                  Manage your organization members and their roles
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -321,17 +544,23 @@ export function WorkspacePage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {optimisticOrg?.members?.map((member) => (
+                    {activeOrgData?.members?.map((member) => (
                       <TableRow key={member.id}>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={member.user.image || ""} />
-                              <AvatarFallback>{member.user.name?.charAt(0) || "U"}</AvatarFallback>
+                              <AvatarFallback>
+                                {member.user.name?.charAt(0) || "U"}
+                              </AvatarFallback>
                             </Avatar>
                             <div>
-                              <div className="font-medium">{member.user.name}</div>
-                              <div className="text-muted-foreground text-sm">{member.user.email}</div>
+                              <div className="font-medium">
+                                {member.user.name}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {member.user.email}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -344,35 +573,55 @@ export function WorkspacePage() {
                                   ? "border-blue-200 bg-blue-100 text-blue-800"
                                   : ""
                             }
-                            variant={member.role === "owner" ? "default" : "outline"}
+                            variant={
+                              member.role === "owner" ? "default" : "outline"
+                            }
                           >
-                            {member.role === "owner" ? "Owner" : member.role === "admin" ? "Admin" : "Member"}
+                            {member.role === "owner"
+                              ? "Owner"
+                              : member.role === "admin"
+                                ? "Admin"
+                                : "Member"}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="text-muted-foreground text-sm">
+                          <div className="text-sm text-muted-foreground">
                             {new Date(member.createdAt).toLocaleDateString()}
                           </div>
                         </TableCell>
                         <TableCell>
                           {member.role !== "owner" &&
-                            (currentMember?.role === "owner" || currentMember?.role === "admin") && (
+                            (currentMember?.role === "owner" ||
+                              currentMember?.role === "admin") && (
                               <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button className="h-8 w-8 p-0" variant="ghost">
-                                    <span className="sr-only">Open menu</span>
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
+                                <DropdownMenuTrigger
+                                  render={
+                                    <Button
+                                      className="h-8 w-8 p-0"
+                                      variant="ghost"
+                                    />
+                                  }
+                                >
+                                  <span className="sr-only">Open menu</span>
+                                  <MoreHorizontal className="h-4 w-4" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                  <DropdownMenuItem
-                                    className="text-destructive"
-                                    onClick={() => handleRemoveMember(member.id)}
-                                  >
-                                    <UserMinus className="mr-2 h-4 w-4" />
-                                    {currentMember?.id === member.id ? "Leave" : "Remove"}
-                                  </DropdownMenuItem>
+                                  <DropdownMenuGroup>
+                                    <DropdownMenuLabel>
+                                      Actions
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuItem
+                                      className="text-destructive"
+                                      onClick={() =>
+                                        handleRemoveMember(member.id)
+                                      }
+                                    >
+                                      <UserMinus className="mr-2 h-4 w-4" />
+                                      {currentMember?.id === member.id
+                                        ? "Leave"
+                                        : "Remove"}
+                                    </DropdownMenuItem>
+                                  </DropdownMenuGroup>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             )}
@@ -389,13 +638,19 @@ export function WorkspacePage() {
             <Card>
               <CardHeader>
                 <CardTitle>Pending Invitations</CardTitle>
-                <CardDescription>Manage and track your organization invitations</CardDescription>
+                <CardDescription>
+                  Manage and track your organization invitations
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                {optimisticOrg?.invitations?.filter((inv) => inv.status === "pending").length === 0 ? (
+                {activeOrgData?.invitations?.filter(
+                  (inv) => inv.status === "pending",
+                ).length === 0 ? (
                   <div className="py-8 text-center">
                     <MailPlus className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-                    <p className="text-muted-foreground">No pending invitations</p>
+                    <p className="text-muted-foreground">
+                      No pending invitations
+                    </p>
                   </div>
                 ) : (
                   <Table>
@@ -410,8 +665,10 @@ export function WorkspacePage() {
                     </TableHeader>
                     <TableBody>
                       <AnimatePresence>
-                        {optimisticOrg?.invitations
-                          ?.filter((invitation) => invitation.status === "pending")
+                        {activeOrgData?.invitations
+                          ?.filter(
+                            (invitation) => invitation.status === "pending",
+                          )
                           .map((invitation) => (
                             <motion.tr
                               animate="visible"
@@ -422,14 +679,22 @@ export function WorkspacePage() {
                               variants={inviteVariants}
                             >
                               <TableCell>
-                                <div className="font-medium">{invitation.email}</div>
+                                <div className="font-medium">
+                                  {invitation.email}
+                                </div>
                               </TableCell>
                               <TableCell>
-                                <Badge variant="outline">{invitation.role === "admin" ? "Admin" : "Member"}</Badge>
+                                <Badge variant="outline">
+                                  {invitation.role === "admin"
+                                    ? "Admin"
+                                    : "Member"}
+                                </Badge>
                               </TableCell>
                               <TableCell>
-                                <div className="text-muted-foreground text-sm">
-                                  {new Date(invitation.createdAt).toLocaleDateString()}
+                                <div className="text-sm text-muted-foreground">
+                                  {new Date(
+                                    invitation.createdAt,
+                                  ).toLocaleDateString()}
                                 </div>
                               </TableCell>
                               <TableCell>
@@ -437,12 +702,22 @@ export function WorkspacePage() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
-                                  <Button onClick={() => copyInvitationLink(invitation.id)} size="sm" variant="outline">
+                                  <Button
+                                    onClick={() =>
+                                      copyInvitationLink(invitation.id)
+                                    }
+                                    size="sm"
+                                    variant="outline"
+                                  >
                                     <Copy className="h-3 w-3" />
                                   </Button>
                                   <Button
-                                    disabled={isRevoking.includes(invitation.id)}
-                                    onClick={() => handleCancelInvitation(invitation.id)}
+                                    disabled={isRevoking.includes(
+                                      invitation.id,
+                                    )}
+                                    onClick={() =>
+                                      handleCancelInvitation(invitation.id)
+                                    }
                                     size="sm"
                                     variant="destructive"
                                   >
@@ -469,9 +744,11 @@ export function WorkspacePage() {
           <CardContent className="pt-6">
             <div className="py-8 text-center">
               <Users className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-              <h3 className="mb-2 font-semibold text-lg">Personal Workspace</h3>
-              <p className="mb-4 text-muted-foreground">Create an organization to collaborate with team members</p>
-              <Button>
+              <h3 className="mb-2 text-lg font-semibold">Personal Workspace</h3>
+              <p className="mb-4 text-muted-foreground">
+                Create an organization to collaborate with team members
+              </p>
+              <Button onClick={() => setIsCreateOrgDialogOpen(true)}>
                 <PlusIcon className="mr-2 h-4 w-4" />
                 Create Organization
               </Button>

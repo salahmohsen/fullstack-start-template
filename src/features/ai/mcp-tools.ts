@@ -47,11 +47,9 @@ const getJoke = async () => {
   }
 };
 
-const getWelcomeMessage = async ({ name }: { name: string }) => {
-  return {
-    content: [{ type: "text", text: `Welcome to the AI, ${name}!` }],
-  };
-};
+const getWelcomeMessage = async ({ name }: { name: string }) => ({
+  content: [{ type: "text", text: `Welcome to the AI, ${name}!` }],
+});
 
 const calculateBMI = async ({ weight, height }: { weight: number; height: number }) => {
   const bmi = weight / (height * height);

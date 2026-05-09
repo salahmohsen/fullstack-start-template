@@ -12,29 +12,54 @@ import {
   Trash2,
   UserPlus,
   UserX,
-} from 'lucide-react';
-import { useState } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+} from "lucide-react";
+import { useState } from "react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { ComponentOverlayLoader } from '@/components/ui/overlay-loader';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useBanUser, useDeleteUser, useUnbanUser, useUsers } from '@/features/user/user-hooks';
-import { canBanUsers, canDeleteUsers, canManageUsers, type UserRole } from '@/lib/auth/permissions';
-import { useSession } from '../auth/auth-hooks';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { ComponentOverlayLoader } from "@/components/ui/overlay-loader";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  useBanUser,
+  useDeleteUser,
+  useUnbanUser,
+  useUsers,
+} from "@/features/user/user-hooks";
+import {
+  canBanUsers,
+  canDeleteUsers,
+  canManageUsers,
+  type UserRole,
+} from "@/lib/auth/permissions";
+
+import { useSession } from "../auth/auth-hooks";
 
 // Extended user interface for display purposes
 interface ExtendedUser {
@@ -52,33 +77,48 @@ interface ExtendedUser {
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case 'active':
+    case "active":
       return (
-        <Badge className="border-emerald-200 bg-emerald-50 font-medium text-emerald-700" variant="outline">
+        <Badge
+          className="border-emerald-200 bg-emerald-50 font-medium text-emerald-700"
+          variant="outline"
+        >
           Active
         </Badge>
       );
-    case 'inactive':
+    case "inactive":
       return (
-        <Badge className="border-slate-200 bg-slate-50 font-medium text-slate-600" variant="outline">
+        <Badge
+          className="border-slate-200 bg-slate-50 font-medium text-slate-600"
+          variant="outline"
+        >
           Inactive
         </Badge>
       );
-    case 'invited':
+    case "invited":
       return (
-        <Badge className="border-blue-200 bg-blue-50 font-medium text-blue-700" variant="outline">
+        <Badge
+          className="border-blue-200 bg-blue-50 font-medium text-blue-700"
+          variant="outline"
+        >
           Invited
         </Badge>
       );
-    case 'suspended':
+    case "suspended":
       return (
-        <Badge className="border-red-200 bg-red-50 font-medium text-red-700" variant="outline">
+        <Badge
+          className="border-red-200 bg-red-50 font-medium text-red-700"
+          variant="outline"
+        >
           Suspended
         </Badge>
       );
     default:
       return (
-        <Badge className="border-slate-200 bg-slate-50 font-medium text-slate-600" variant="outline">
+        <Badge
+          className="border-slate-200 bg-slate-50 font-medium text-slate-600"
+          variant="outline"
+        >
           {status}
         </Badge>
       );
@@ -87,29 +127,41 @@ function getStatusBadge(status: string) {
 
 function getRoleBadge(role: string) {
   switch (role) {
-    case 'superadmin':
+    case "superadmin":
       return (
-        <Badge className="border-purple-200 bg-purple-50 font-medium text-purple-700" variant="outline">
+        <Badge
+          className="border-purple-200 bg-purple-50 font-medium text-purple-700"
+          variant="outline"
+        >
           <Shield className="mr-1 h-3 w-3" />
           Superadmin
         </Badge>
       );
-    case 'admin':
+    case "admin":
       return (
-        <Badge className="border-indigo-200 bg-indigo-50 font-medium text-indigo-700" variant="outline">
+        <Badge
+          className="border-indigo-200 bg-indigo-50 font-medium text-indigo-700"
+          variant="outline"
+        >
           <ShieldCheck className="mr-1 h-3 w-3" />
           Admin
         </Badge>
       );
-    case 'user':
+    case "user":
       return (
-        <Badge className="border-slate-200 bg-slate-50 font-medium text-slate-600" variant="outline">
+        <Badge
+          className="border-slate-200 bg-slate-50 font-medium text-slate-600"
+          variant="outline"
+        >
           User
         </Badge>
       );
     default:
       return (
-        <Badge className="border-slate-200 bg-slate-50 font-medium text-slate-600" variant="outline">
+        <Badge
+          className="border-slate-200 bg-slate-50 font-medium text-slate-600"
+          variant="outline"
+        >
           {role}
         </Badge>
       );
@@ -117,7 +169,10 @@ function getRoleBadge(role: string) {
 }
 
 function UserTableSkeleton() {
-  const skeletonItems = Array.from({ length: 5 }, (_, i) => `skeleton-${Date.now()}-${i}`);
+  const skeletonItems = Array.from(
+    { length: 5 },
+    (_, i) => `skeleton-${Date.now()}-${i}`,
+  );
 
   return (
     <div className="space-y-4">
@@ -142,11 +197,15 @@ function UserTableSkeleton() {
 function normalizeUserData(users: any[]): ExtendedUser[] {
   return users.map((user) => ({
     id: user.id,
-    name: user.name || 'Unknown',
+    name: user.name || "Unknown",
     email: user.email,
-    phone: user.phone || 'N/A',
-    role: user.role || 'user',
-    status: user.banned ? 'suspended' : user.emailVerified ? 'active' : 'inactive',
+    phone: user.phone || "N/A",
+    role: user.role || "user",
+    status: user.banned
+      ? "suspended"
+      : user.emailVerified
+        ? "active"
+        : "inactive",
     emailVerified: user.emailVerified,
     banned: user.banned,
     createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
@@ -155,9 +214,9 @@ function normalizeUserData(users: any[]): ExtendedUser[] {
 }
 
 export function AdminUserList() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [roleFilter, setRoleFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
 
@@ -167,7 +226,7 @@ export function AdminUserList() {
   const { mutate: unbanUser } = useUnbanUser();
   const { data: session } = useSession();
 
-  const currentUserRole = (session?.user?.role as UserRole) || 'user';
+  const currentUserRole = (session?.user?.role as UserRole) || "user";
   const users = actualUsers ? normalizeUserData(actualUsers) : [];
 
   // Filter users based on search term, status, and role
@@ -176,8 +235,9 @@ export function AdminUserList() {
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    const matchesStatus =
+      statusFilter === "all" || user.status === statusFilter;
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
 
     return matchesSearch && matchesStatus && matchesRole;
   });
@@ -185,21 +245,24 @@ export function AdminUserList() {
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
   const startIndex = (currentPage - 1) * usersPerPage;
-  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + usersPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + usersPerPage,
+  );
 
   const handleUserAction = (action: string, userId: string) => {
     switch (action) {
-      case 'ban':
+      case "ban":
         if (canBanUsers(currentUserRole)) {
           banUser({ userId });
         }
         break;
-      case 'unban':
+      case "unban":
         if (canBanUsers(currentUserRole)) {
           unbanUser({ userId });
         }
         break;
-      case 'delete':
+      case "delete":
         if (canDeleteUsers(currentUserRole)) {
           deleteUser({ userId });
         }
@@ -210,12 +273,14 @@ export function AdminUserList() {
   };
 
   return (
-    <div className="container relative mx-auto space-y-6 py-6">
+    <div className="relative container mx-auto space-y-6 py-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-bold text-3xl tracking-tight">User List</h1>
-          <p className="text-muted-foreground">Manage your users and their roles here.</p>
+          <h1 className="text-3xl font-bold tracking-tight">User List</h1>
+          <p className="text-muted-foreground">
+            Manage your users and their roles here.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline">
@@ -300,7 +365,10 @@ export function AdminUserList() {
             <TableBody>
               {paginatedUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell className="py-8 text-center text-muted-foreground" colSpan={6}>
+                  <TableCell
+                    className="py-8 text-center text-muted-foreground"
+                    colSpan={6}
+                  >
                     No users found
                   </TableCell>
                 </TableRow>
@@ -313,14 +381,16 @@ export function AdminUserList() {
                           <AvatarImage alt={user.name} src={user.image} />
                           <AvatarFallback>
                             {user.name
-                              .split(' ')
+                              .split(" ")
                               .map((n) => n[0])
-                              .join('')}
+                              .join("")}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="font-medium">{user.name}</div>
-                          <div className="text-muted-foreground text-sm">{user.email}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {user.email}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
@@ -339,30 +409,48 @@ export function AdminUserList() {
                     <TableCell>{getRoleBadge(user.role)}</TableCell>
                     <TableCell>
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button className="h-8 w-8 p-0" variant="ghost">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
+                        <DropdownMenuTrigger
+                          render={
+                            <Button className="h-8 w-8 p-0" variant="ghost" />
+                          }
+                        >
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => handleUserAction('view', user.id)}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleUserAction('activity', user.id)}>
-                            <RefreshCw className="mr-2 h-4 w-4" />
-                            View Activity
-                          </DropdownMenuItem>
+                          <DropdownMenuGroup>
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem
+                              onClick={() => handleUserAction("view", user.id)}
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleUserAction("activity", user.id)
+                              }
+                            >
+                              <RefreshCw className="mr-2 h-4 w-4" />
+                              View Activity
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
                           <DropdownMenuSeparator />
                           {canManageUsers(currentUserRole) && (
                             <>
-                              <DropdownMenuItem onClick={() => handleUserAction('email', user.id)}>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleUserAction("email", user.id)
+                                }
+                              >
                                 <Mail className="mr-2 h-4 w-4" />
                                 Send Email
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleUserAction('reset', user.id)}>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleUserAction("reset", user.id)
+                                }
+                              >
                                 <RefreshCw className="mr-2 h-4 w-4" />
                                 Reset Password
                               </DropdownMenuItem>
@@ -371,12 +459,18 @@ export function AdminUserList() {
                           )}
                           {canBanUsers(currentUserRole) &&
                             (user.banned ? (
-                              <DropdownMenuItem onClick={() => handleUserAction('unban', user.id)}>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleUserAction("unban", user.id)
+                                }
+                              >
                                 <ShieldCheck className="mr-2 h-4 w-4" />
                                 Unban User
                               </DropdownMenuItem>
                             ) : (
-                              <DropdownMenuItem onClick={() => handleUserAction('ban', user.id)}>
+                              <DropdownMenuItem
+                                onClick={() => handleUserAction("ban", user.id)}
+                              >
                                 <UserX className="mr-2 h-4 w-4" />
                                 Ban User
                               </DropdownMenuItem>
@@ -384,7 +478,9 @@ export function AdminUserList() {
                           {canDeleteUsers(currentUserRole) && (
                             <DropdownMenuItem
                               className="text-destructive"
-                              onClick={() => handleUserAction('delete', user.id)}
+                              onClick={() =>
+                                handleUserAction("delete", user.id)
+                              }
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete User
@@ -401,16 +497,18 @@ export function AdminUserList() {
 
           {/* Pagination Footer */}
           <div className="flex items-center justify-between px-2 py-4">
-            <div className="text-muted-foreground text-sm">
-              {filteredUsers.length === 0 ? '0 of 0 row(s) selected.' : `0 of ${filteredUsers.length} row(s) selected.`}
+            <div className="text-sm text-muted-foreground">
+              {filteredUsers.length === 0
+                ? "0 of 0 row(s) selected."
+                : `0 of ${filteredUsers.length} row(s) selected.`}
             </div>
             <div className="flex items-center space-x-6 lg:space-x-8">
               <div className="flex items-center space-x-2">
-                <p className="font-medium text-sm">Rows per page</p>
+                <p className="text-sm font-medium">Rows per page</p>
                 <Select
                   onValueChange={(value) => {
                     // Handle rows per page change
-                    console.log('Rows per page:', value);
+                    console.log("Rows per page:", value);
                   }}
                   value={usersPerPage.toString()}
                 >
@@ -426,7 +524,7 @@ export function AdminUserList() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex w-[100px] items-center justify-center font-medium text-sm">
+              <div className="flex w-[100px] items-center justify-center text-sm font-medium">
                 Page {currentPage} of {totalPages}
               </div>
               <div className="flex items-center space-x-2">
@@ -449,7 +547,9 @@ export function AdminUserList() {
                 <Button
                   className="h-8 w-8 p-0"
                   disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                  onClick={() =>
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  }
                   variant="outline"
                 >
                   <span className="sr-only">Go to next page</span>→
@@ -469,7 +569,11 @@ export function AdminUserList() {
       </Card>
 
       {/* Overlay Loader */}
-      <ComponentOverlayLoader isLoading={isLoading} message="Loading users..." size="md" />
+      <ComponentOverlayLoader
+        isLoading={isLoading}
+        message="Loading users..."
+        size="md"
+      />
     </div>
   );
 }

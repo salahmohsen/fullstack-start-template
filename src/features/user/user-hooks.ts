@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import { authClient } from '@/lib/auth/auth-client';
 import type { UserRole } from '@/lib/auth/permissions';
 
@@ -24,7 +25,7 @@ export const useUsers = () => {
         },
         {
           throw: true,
-        }
+        },
       );
 
       return data?.users || [];
@@ -39,14 +40,18 @@ export const useUsers = () => {
   });
 };
 
-export const useSessions = () => {
-  return useQuery({
+export const useSessions = () =>
+  useQuery({
     queryKey: userQueryKeys.sessions(),
     queryFn: async () => {
       const getSession = authClient.getSession();
       const getSessions = authClient.listSessions();
       const getOrganization = authClient.organization.getFullOrganization();
-      const [session, organization, sessions] = await Promise.all([getSession, getOrganization, getSessions]);
+      const [session, organization, sessions] = await Promise.all([
+        getSession,
+        getOrganization,
+        getSessions,
+      ]);
       return { session, organization, sessions } as const;
     },
     retry: (failureCount, error: Error) => {
@@ -56,7 +61,6 @@ export const useSessions = () => {
       return failureCount < 2;
     },
   });
-};
 
 export const usePasskeys = () => {
   const passkeys = authClient.useListPasskeys();
@@ -152,7 +156,13 @@ export const useSetUserRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+    mutationFn: async ({
+      userId,
+      role,
+    }: {
+      userId: string;
+      role: UserRole | UserRole[];
+    }) => {
       const result = await authClient.admin.setRole({
         userId,
         role,
@@ -177,14 +187,22 @@ export const useResetUserPassword = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, password }: { userId: string; password: string }) => {
+    mutationFn: async ({
+      userId,
+      password,
+    }: {
+      userId: string;
+      password: string;
+    }) => {
       const result = await authClient.admin.setUserPassword({
         userId,
         newPassword: password,
       });
 
       if (result.error) {
-        throw new Error(result.error.message || 'Failed to reset user password');
+        throw new Error(
+          result.error.message || 'Failed to reset user password',
+        );
       }
 
       return result;
@@ -208,7 +226,9 @@ export const useRevokeUserSessions = () => {
       });
 
       if (result.error) {
-        throw new Error(result.error.message || 'Failed to revoke user sessions');
+        throw new Error(
+          result.error.message || 'Failed to revoke user sessions',
+        );
       }
 
       return result;
@@ -222,8 +242,8 @@ export const useRevokeUserSessions = () => {
   });
 };
 
-export const useImpersonateUser = () => {
-  return useMutation({
+export const useImpersonateUser = () =>
+  useMutation({
     mutationFn: async ({ userId }: { userId: string }) => {
       const result = await authClient.admin.impersonateUser({
         userId,
@@ -239,7 +259,6 @@ export const useImpersonateUser = () => {
       console.error('Impersonate user error:', error);
     },
   });
-};
 
 export const useBanUser = () => {
   const queryClient = useQueryClient();
@@ -313,8 +332,8 @@ export const useRevokeSession = () => {
   });
 };
 
-export const useSendVerificationEmail = () => {
-  return useMutation({
+export const useSendVerificationEmail = () =>
+  useMutation({
     mutationFn: async ({ email }: { email: string }) => {
       const result = await authClient.sendVerificationEmail(
         {
@@ -322,7 +341,7 @@ export const useSendVerificationEmail = () => {
         },
         {
           throw: true,
-        }
+        },
       );
 
       if (!result.status) {
@@ -335,7 +354,6 @@ export const useSendVerificationEmail = () => {
       console.error('Send verification email error:', error);
     },
   });
-};
 
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
@@ -363,8 +381,8 @@ export const useUpdateUser = () => {
   });
 };
 
-export const useChangePassword = () => {
-  return useMutation({
+export const useChangePassword = () =>
+  useMutation({
     mutationFn: async ({
       currentPassword,
       newPassword,
@@ -390,7 +408,6 @@ export const useChangePassword = () => {
       console.error('Change password error:', error);
     },
   });
-};
 
 export const useAddPasskey = () => {
   const queryClient = useQueryClient();
@@ -441,8 +458,8 @@ export const useDeletePasskey = () => {
 };
 
 // Two Factor Authentication hooks
-export const useGetTotpUri = () => {
-  return useMutation({
+export const useGetTotpUri = () =>
+  useMutation({
     mutationFn: async (password: string) => {
       const result = await authClient.twoFactor.getTotpUri({
         password,
@@ -458,7 +475,6 @@ export const useGetTotpUri = () => {
       console.error('Get TOTP URI error:', error);
     },
   });
-};
 
 export const useEnableTwoFactor = () => {
   const queryClient = useQueryClient();
@@ -470,7 +486,9 @@ export const useEnableTwoFactor = () => {
       });
 
       if (result.error) {
-        throw new Error(result.error.message || 'Failed to enable two-factor authentication');
+        throw new Error(
+          result.error.message || 'Failed to enable two-factor authentication',
+        );
       }
 
       return result;
@@ -495,7 +513,9 @@ export const useDisableTwoFactor = () => {
       });
 
       if (result.error) {
-        throw new Error(result.error.message || 'Failed to disable two-factor authentication');
+        throw new Error(
+          result.error.message || 'Failed to disable two-factor authentication',
+        );
       }
 
       return result;
@@ -510,15 +530,17 @@ export const useDisableTwoFactor = () => {
   });
 };
 
-export const useVerifyTwoFactor = () => {
-  return useMutation({
+export const useVerifyTwoFactor = () =>
+  useMutation({
     mutationFn: async ({ code }: { code: string }) => {
       const result = await authClient.twoFactor.verifyTotp({
         code,
       });
 
       if (result.error) {
-        throw new Error(result.error.message || 'Failed to verify two-factor authentication');
+        throw new Error(
+          result.error.message || 'Failed to verify two-factor authentication',
+        );
       }
 
       return result;
@@ -527,4 +549,3 @@ export const useVerifyTwoFactor = () => {
       console.error('Verify two-factor error:', error);
     },
   });
-};

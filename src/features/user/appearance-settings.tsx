@@ -2,12 +2,19 @@ import { Eye, Monitor, Moon, Sun, Type, Volume2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
 import { LanguageSwitch } from "@/components/language-switch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 
@@ -83,20 +90,26 @@ export function AppearanceSettings() {
         </CardHeader>
         <CardContent>
           <RadioGroup
-            value={theme || "system"}
+            className="grid grid-cols-1 gap-4 md:grid-cols-3"
             onValueChange={setTheme}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            value={theme || "system"}
           >
             {themes.map((themeOption) => (
-              <div key={themeOption.value} className="space-y-2">
+              <div className="space-y-2" key={themeOption.value}>
                 <Label
+                  className="flex cursor-pointer flex-col items-center justify-center rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                   htmlFor={themeOption.value}
-                  className="flex flex-col items-center justify-center rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                 >
-                  <RadioGroupItem value={themeOption.value} id={themeOption.value} className="sr-only" />
+                  <RadioGroupItem
+                    className="sr-only"
+                    id={themeOption.value}
+                    value={themeOption.value}
+                  />
                   <themeOption.icon className="mb-2 h-6 w-6" />
                   <span className="font-medium">{themeOption.label}</span>
-                  <span className="text-xs text-muted-foreground text-center">{themeOption.description}</span>
+                  <span className="text-center text-xs text-muted-foreground">
+                    {themeOption.description}
+                  </span>
                 </Label>
               </div>
             ))}
@@ -112,13 +125,13 @@ export function AppearanceSettings() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-sm font-medium flex items-center gap-2">
+            <Label className="flex items-center gap-2 text-sm font-medium">
               <Type className="h-4 w-4" />
               Font Size
             </Label>
             <Select
-              value={displaySettings.fontSize}
               onValueChange={(value) => handleDisplaySettingChange("fontSize", value)}
+              value={displaySettings.fontSize}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -136,7 +149,9 @@ export function AppearanceSettings() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <Label className="text-sm font-medium">Compact Mode</Label>
-              <p className="text-sm text-muted-foreground">Reduce spacing and padding for a more compact interface</p>
+              <p className="text-sm text-muted-foreground">
+                Reduce spacing and padding for a more compact interface
+              </p>
             </div>
             <Switch
               checked={displaySettings.compactMode}
@@ -161,11 +176,13 @@ export function AppearanceSettings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-sm font-medium flex items-center gap-2">
+              <Label className="flex items-center gap-2 text-sm font-medium">
                 <Eye className="h-4 w-4" />
                 High Contrast Mode
               </Label>
-              <p className="text-sm text-muted-foreground">Increase contrast for better visibility</p>
+              <p className="text-sm text-muted-foreground">
+                Increase contrast for better visibility
+              </p>
             </div>
             <Switch
               checked={displaySettings.highContrast}
@@ -186,9 +203,13 @@ export function AppearanceSettings() {
             <Label className="text-sm font-medium">Interface Language</Label>
             <div className="flex items-center gap-2">
               <LanguageSwitch />
-              <span className="text-muted-foreground text-sm">Current: {i18n.language?.toUpperCase()}</span>
+              <span className="text-sm text-muted-foreground">
+                Current: {i18n.language?.toUpperCase()}
+              </span>
             </div>
-            <p className="text-xs text-muted-foreground">Select the language for the user interface.</p>
+            <p className="text-xs text-muted-foreground">
+              Select the language for the user interface.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -202,7 +223,7 @@ export function AppearanceSettings() {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-sm font-medium flex items-center gap-2">
+              <Label className="flex items-center gap-2 text-sm font-medium">
                 <Volume2 className="h-4 w-4" />
                 Screen Reader Support
               </Label>
@@ -218,7 +239,9 @@ export function AppearanceSettings() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <Label className="text-sm font-medium">Keyboard Navigation</Label>
-              <p className="text-sm text-muted-foreground">Enable enhanced keyboard navigation shortcuts</p>
+              <p className="text-sm text-muted-foreground">
+                Enable enhanced keyboard navigation shortcuts
+              </p>
             </div>
             <Switch defaultChecked />
           </div>
@@ -228,7 +251,9 @@ export function AppearanceSettings() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <Label className="text-sm font-medium">Focus Indicators</Label>
-              <p className="text-sm text-muted-foreground">Show enhanced focus indicators for better navigation</p>
+              <p className="text-sm text-muted-foreground">
+                Show enhanced focus indicators for better navigation
+              </p>
             </div>
             <Switch defaultChecked />
           </div>
@@ -242,7 +267,7 @@ export function AppearanceSettings() {
           <CardDescription>Preview how your settings will look.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border p-4 space-y-3">
+          <div className="space-y-3 rounded-lg border p-4">
             <div className="flex items-center justify-between">
               <span className="font-medium">Sample Interface Element</span>
               <Button size="sm">Action</Button>
@@ -250,16 +275,19 @@ export function AppearanceSettings() {
             <p className="text-sm text-muted-foreground">
               This is how text will appear with your current settings. The font size is set to{" "}
               {displaySettings.fontSize} and{" "}
-              {displaySettings.highContrast ? "high contrast mode is enabled" : "normal contrast is used"}.
+              {displaySettings.highContrast
+                ? "high contrast mode is enabled"
+                : "normal contrast is used"}
+              .
             </p>
             <div className="flex gap-2">
-              <Button variant="default" size="sm">
+              <Button size="sm" variant="default">
                 Primary
               </Button>
-              <Button variant="outline" size="sm">
+              <Button size="sm" variant="outline">
                 Secondary
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button size="sm" variant="ghost">
                 Ghost
               </Button>
             </div>

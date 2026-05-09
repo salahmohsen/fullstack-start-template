@@ -12,7 +12,14 @@ import {
   Users,
 } from 'lucide-react';
 import { type ComponentProps } from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/components/ui/sidebar';
 import { NavItems } from '@/features/app/nav-items';
 import { NavUser } from '@/features/app/nav-user';
 import { useOrganizations } from '@/features/organization/organization-hooks';

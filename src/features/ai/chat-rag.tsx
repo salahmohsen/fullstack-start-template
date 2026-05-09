@@ -2,6 +2,7 @@ import { type UIMessage, useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ArrowUpIcon, StopCircleIcon } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -39,7 +40,7 @@ const ToolInvocation = ({ toolInvocation }: { toolInvocation: ToolInvocationType
 
   if (toolInvocation.toolName === "getInformation" && toolInvocation.state === "call") {
     return (
-      <div key={toolInvocation.toolCallId} className="animate-pulse">
+      <div className="animate-pulse" key={toolInvocation.toolCallId}>
         Calling getInformation tool
       </div>
     );
@@ -47,7 +48,7 @@ const ToolInvocation = ({ toolInvocation }: { toolInvocation: ToolInvocationType
 
   if (toolInvocation.toolName === "generateImage") {
     return (
-      <div key={toolInvocation.toolCallId} className="animate-pulse">
+      <div className="animate-pulse" key={toolInvocation.toolCallId}>
         Calling generateImage tool
       </div>
     );
@@ -65,8 +66,6 @@ const ToolInvocation = ({ toolInvocation }: { toolInvocation: ToolInvocationType
   return null;
 };
 
-
-
 const Message = ({ message }: { message: MessageType }) => {
   return (
     <div className="whitespace-pre-wrap">
@@ -77,37 +76,50 @@ const Message = ({ message }: { message: MessageType }) => {
             if (part.type === "text") {
               return <p key={index}>{part.text}</p>;
             }
-            
+
             // Handle new v5 tool patterns - tools are prefixed with 'tool-'
             if (part.type.startsWith("tool-")) {
               const toolPart = part as any; // Type assertion for tool part
               const { toolCallId, state } = toolPart;
               const toolName = part.type.replace("tool-", "");
-              
+
               // Tool is completed and has output
               if (state === "output-available" && toolPart.output) {
                 if (toolName === "getInformation") {
                   return (
-                    <div key={toolCallId} className="bg-blue-50 border border-blue-200 rounded-lg p-3 my-2">
+                    <div
+                      className="my-2 rounded-lg border border-blue-200 bg-blue-50 p-3"
+                      key={toolCallId}
+                    >
                       <div className="font-medium text-blue-800">Information Retrieved:</div>
-                      <div className="text-blue-700">{JSON.stringify(toolPart.output, null, 2)}</div>
+                      <div className="text-blue-700">
+                        {JSON.stringify(toolPart.output, null, 2)}
+                      </div>
                     </div>
                   );
                 }
-                
+
                 return (
-                  <div key={toolCallId} className="bg-green-50 border border-green-200 rounded-lg p-3 my-2">
+                  <div
+                    className="my-2 rounded-lg border border-green-200 bg-green-50 p-3"
+                    key={toolCallId}
+                  >
                     <div className="font-medium text-green-800">{toolName} completed:</div>
-                    <pre className="text-green-700 text-sm">{JSON.stringify(toolPart.output, null, 2)}</pre>
+                    <pre className="text-sm text-green-700">
+                      {JSON.stringify(toolPart.output, null, 2)}
+                    </pre>
                   </div>
                 );
               }
-              
+
               // Tool is still processing
               return (
-                <div key={toolCallId || index} className="animate-pulse bg-yellow-50 border border-yellow-200 rounded-lg p-3 my-2">
+                <div
+                  className="my-2 animate-pulse rounded-lg border border-yellow-200 bg-yellow-50 p-3"
+                  key={toolCallId || index}
+                >
                   <div className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-500"></div>
+                    <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-yellow-500" />
                     <span className="text-yellow-700">
                       {state === "input-streaming" && `Preparing ${toolName}...`}
                       {state === "input-available" && `Executing ${toolName}...`}
@@ -117,12 +129,12 @@ const Message = ({ message }: { message: MessageType }) => {
                 </div>
               );
             }
-            
+
             // Handle step indicators
             if (part.type === "step-start") {
               return null; // Don't render step indicators for cleaner UI
             }
-            
+
             return null;
           })}
         </div>
@@ -137,16 +149,14 @@ const MessageList = ({
 }: {
   messages: MessageType[];
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
-}) => {
-  return (
-    <div className="mx-auto mb-20 w-full max-w-2xl space-y-4 overflow-y-auto">
-      {messages.map((message) => (
-        <Message key={message.id} message={message} />
-      ))}
-      <div ref={messagesEndRef} />
-    </div>
-  );
-};
+}) => (
+  <div className="mx-auto mb-20 w-full max-w-2xl space-y-4 overflow-y-auto">
+    {messages.map((message) => (
+      <Message key={message.id} message={message} />
+    ))}
+    <div ref={messagesEndRef} />
+  </div>
+);
 
 export function Chat({ api }: { api?: string }) {
   const [input, setInput] = useState("");
@@ -195,18 +205,17 @@ export function Chat({ api }: { api?: string }) {
     <div className="relative flex w-full flex-col items-center justify-center gap-4">
       <MessageList messages={messages as MessageType[]} messagesEndRef={messagesEndRef} />
 
-      <form onSubmit={handleSubmit} className="relative flex w-full max-w-xl flex-col items-center justify-center">
+      <form
+        className="relative flex w-full max-w-xl flex-col items-center justify-center"
+        onSubmit={handleSubmit}
+      >
         <div className="fixed bottom-0 z-10 mb-8 w-full max-w-lg bg-background">
           <div className="relative flex flex-row items-center justify-between">
             <Textarea
-              data-testid="multimodal-input"
-              ref={textareaRef}
-              placeholder="Send a message..."
-              value={input}
-              onChange={handleInputChange}
-              className="w-full rounded border border-gray-300 p-2 pr-10 shadow-xl"
-              rows={1}
               autoFocus
+              className="w-full rounded border border-gray-300 p-2 pr-10 shadow-xl"
+              data-testid="multimodal-input"
+              onChange={handleInputChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -215,6 +224,10 @@ export function Chat({ api }: { api?: string }) {
                   }
                 }
               }}
+              placeholder="Send a message..."
+              ref={textareaRef}
+              rows={1}
+              value={input}
             />
             <div className="absolute right-2">
               {status === "streaming" ? (
@@ -233,8 +246,8 @@ export function Chat({ api }: { api?: string }) {
 function PureStopButton({ stop }: { stop: () => void }) {
   return (
     <Button
+      className="h-fit rounded-full border p-1.5 dark:border-zinc-600"
       data-testid="stop-button"
-      className="h-fit rounded-full border p-1.5 dark:border-zinc-600 "
       onClick={(event) => {
         event.preventDefault();
         stop();
@@ -258,13 +271,13 @@ function PureSendButton({
 }) {
   return (
     <Button
-      data-testid="send-button"
       className="h-fit rounded-full border p-1.5 dark:border-zinc-600"
+      data-testid="send-button"
+      disabled={input.length === 0 || uploadQueue.length > 0}
       onClick={(event) => {
         event.preventDefault();
         submitForm(event as React.FormEvent);
       }}
-      disabled={input.length === 0 || uploadQueue.length > 0}
     >
       <ArrowUpIcon size={14} />
     </Button>
