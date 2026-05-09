@@ -124,7 +124,8 @@ export default {
   INVITED_BY: "te ha invitado a unirte",
   INVITATION_SENT_TO: "Esta invitación fue enviada a",
   WELCOME_TO: "Bienvenido a",
-  JOIN_SUCCESS: "¡Te has unido con éxito a la organización. Estamos emocionados de tenerte a bordo!",
+  JOIN_SUCCESS:
+    "¡Te has unido con éxito a la organización. Estamos emocionados de tenerte a bordo!",
   INVITATION_DECLINED: "Invitación Rechazada",
   DECLINED_MESSAGE: "Has rechazado la invitación para unirte",
   DECLINE: "Rechazar",
@@ -189,7 +190,8 @@ export default {
   FULL_NAME: "Nombre Completo",
   UPDATE: "Actualizar",
   ADD_NEW_PASSKEY: "Añadir Nueva Passkey",
-  ADD_PASSKEY_DESC: "Crea una nueva passkey para acceder a tu cuenta de forma segura sin contraseña.",
+  ADD_PASSKEY_DESC:
+    "Crea una nueva passkey para acceder a tu cuenta de forma segura sin contraseña.",
   PASSKEY_NAME: "Nombre de Passkey",
   CREATE_PASSKEY: "Crear Passkey",
   LIST_PASSKEYS: "Lista de passkeys",

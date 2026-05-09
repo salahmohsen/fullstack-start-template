@@ -35,7 +35,6 @@ This project provides a solid foundation for building modern web applications us
 
 <img width="1599" height="1112" alt="image" src="https://github.com/user-attachments/assets/3e0d9de1-e7c4-4f0e-93f9-1cca421fc424" />
 
-
 ## Database with Neon
 
 This boilerplate uses [Neon](https://neon.com/) as the primary database solution, providing a modern serverless PostgreSQL experience that's perfect for full-stack applications.
@@ -217,18 +216,12 @@ Visit `/dashboard/tanstack-db-example` to see TanStack DB in action with a react
 
 ```tsx
 // One collection, three reactive views
-const { data: allTodos } = useLiveQuery((q) =>
-  q.from({ todo: todoCollection }),
-);
+const { data: allTodos } = useLiveQuery((q) => q.from({ todo: todoCollection }));
 const { data: completed } = useLiveQuery((q) =>
-  q
-    .from({ todo: todoCollection })
-    .where(({ todo }) => eq(todo.completed, true)),
+  q.from({ todo: todoCollection }).where(({ todo }) => eq(todo.completed, true)),
 );
 const { data: pending } = useLiveQuery((q) =>
-  q
-    .from({ todo: todoCollection })
-    .where(({ todo }) => eq(todo.completed, false)),
+  q.from({ todo: todoCollection }).where(({ todo }) => eq(todo.completed, false)),
 );
 ```
 
@@ -284,7 +277,7 @@ The example shows how TanStack DB integrates seamlessly with your existing tRPC 
 ```tsx
 const todoCollection = createCollection(
   queryCollectionOptions<Todo>({
-    queryKey: ['todos'],
+    queryKey: ["todos"],
     queryFn: async () => {
       const data = await todos.refetch();
       return data.data ?? [];
@@ -382,7 +375,7 @@ To add new tools to your MCP server:
 const yourNewTool = async ({ param }: { param: string }) => {
   // Your tool logic here
   return {
-    content: [{ type: 'text', text: `Result: ${param}` }],
+    content: [{ type: "text", text: `Result: ${param}` }],
   };
 };
 ```
@@ -393,8 +386,8 @@ const yourNewTool = async ({ param }: { param: string }) => {
 export const tools = [
   // ... existing tools
   {
-    name: 'yourNewTool',
-    description: 'Description of what your tool does',
+    name: "yourNewTool",
+    description: "Description of what your tool does",
     callback: yourNewTool,
     inputSchema: z.object({
       param: z.string(),

@@ -6,18 +6,18 @@ interface EmailLayoutProps {
   children: ReactNode;
 }
 
-export const EmailLayout = ({ preview, children }: EmailLayoutProps) => {
-  return (
-    <Html>
-      <Head />
-      <Preview>{preview}</Preview>
-      <Tailwind>
-        <Body className="bg-gray-50 font-sans">
-          <Container className="mx-auto max-w-xl px-4 py-8">
-            <Section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">{children}</Section>
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
-  );
-};
+export const EmailLayout = ({ preview, children }: EmailLayoutProps) => (
+  <Html>
+    <Head />
+    <Preview>{preview}</Preview>
+    <Tailwind>
+      <Body className="bg-gray-50 font-sans">
+        <Container className="mx-auto max-w-xl px-4 py-8">
+          <Section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            {children}
+          </Section>
+        </Container>
+      </Body>
+    </Tailwind>
+  </Html>
+);

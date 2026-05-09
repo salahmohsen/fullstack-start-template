@@ -90,7 +90,8 @@ export default {
   RESET_PASSWORD_BUTTON: "Passwort zurücksetzen",
   // Forgot Password
   CHECK_EMAIL: "Überprüfen Sie Ihre E-Mail",
-  PASSWORD_RESET_LINK_SENT: "Wir haben einen Link zum Zurücksetzen des Passworts an Ihre E-Mail gesendet.",
+  PASSWORD_RESET_LINK_SENT:
+    "Wir haben einen Link zum Zurücksetzen des Passworts an Ihre E-Mail gesendet.",
   CHECK_SPAM: "Wenn Sie die E-Mail nicht sehen, überprüfen Sie Ihren Spam-Ordner.",
   BACK_TO_RESET: "Zurück zum Zurücksetzen des Passworts",
   ENTER_EMAIL: "Geben Sie Ihre E-Mail-Adresse ein",
@@ -123,7 +124,8 @@ export default {
   INVITED_BY: "hat Sie eingeladen, beizutreten",
   INVITATION_SENT_TO: "Diese Einladung wurde gesendet an",
   WELCOME_TO: "Willkommen bei",
-  JOIN_SUCCESS: "Sie sind der Organisation erfolgreich beigetreten. Wir freuen uns, Sie an Bord zu haben!",
+  JOIN_SUCCESS:
+    "Sie sind der Organisation erfolgreich beigetreten. Wir freuen uns, Sie an Bord zu haben!",
   INVITATION_DECLINED: "Einladung abgelehnt",
   DECLINED_MESSAGE: "Sie haben die Einladung abgelehnt, beizutreten",
   DECLINE: "Ablehnen",
@@ -147,8 +149,10 @@ export default {
   OWNER: "Besitzer",
   INVITES: "Einladungen",
   NO_ACTIVE_INVITATIONS: "Keine aktiven Einladungen",
-  CANT_INVITE_PERSONAL: "Sie können keine Mitglieder zu Ihrem persönlichen Arbeitsbereich einladen.",
-  CREATE_ORGANIZATION: "Erstellen Sie eine neue Organisation, um mit Ihrem Team zusammenzuarbeiten.",
+  CANT_INVITE_PERSONAL:
+    "Sie können keine Mitglieder zu Ihrem persönlichen Arbeitsbereich einladen.",
+  CREATE_ORGANIZATION:
+    "Erstellen Sie eine neue Organisation, um mit Ihrem Team zusammenzuarbeiten.",
   ORGANIZATION_NAME: "Organisationsname",
   ORGANIZATION_SLUG: "Organisations-Slug",
   LOGO: "Logo",
@@ -188,7 +192,8 @@ export default {
   FULL_NAME: "Vollständiger Name",
   UPDATE: "Aktualisieren",
   ADD_NEW_PASSKEY: "Neuen Passkey hinzufügen",
-  ADD_PASSKEY_DESC: "Erstellen Sie einen neuen Passkey, um sicher ohne Passwort auf Ihr Konto zuzugreifen.",
+  ADD_PASSKEY_DESC:
+    "Erstellen Sie einen neuen Passkey, um sicher ohne Passwort auf Ihr Konto zuzugreifen.",
   PASSKEY_NAME: "Passkey-Name",
   CREATE_PASSKEY: "Passkey erstellen",
   LIST_PASSKEYS: "Liste der Passkeys",
