@@ -3,7 +3,9 @@ import { getCookie } from "@tanstack/react-start/server";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+
 import { auth } from "@/lib/auth/auth";
+
 import type { Language } from "../intl/i18n";
 
 export const createTRPCContext = async (opts: { headers: Headers; req: Request }) => {
@@ -33,13 +35,13 @@ const t = initTRPC.context<Context>().create({
     };
   },
   sse: {
-    maxDurationMs: 5 * 60 * 1_000, // 5 minutes
+    maxDurationMs: 5 * 60 * 1000, // 5 minutes
     ping: {
       enabled: true,
-      intervalMs: 3_000,
+      intervalMs: 3000,
     },
     client: {
-      reconnectAfterInactivityMs: 5_000,
+      reconnectAfterInactivityMs: 5000,
     },
   },
 });

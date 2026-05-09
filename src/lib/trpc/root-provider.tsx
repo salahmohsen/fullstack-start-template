@@ -1,14 +1,36 @@
-/** biome-ignore-all lint/style/noMagicNumbers: <explanation> */
+/** biome-ignore-all lint/style/noMagicNumbers: false positive for shared cache timings and reconnect intervals */
 import { QueryCache, QueryClient } from "@tanstack/react-query";
-
+import type { QueryKey } from "@tanstack/react-query";
 import { createIsomorphicFn, createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { createTRPCClient, httpBatchLink, httpLink, isNonJsonSerializable, loggerLink, splitLink } from "@trpc/client";
+import {
+  createTRPCClient,
+  httpBatchLink,
+  httpLink,
+  isNonJsonSerializable,
+  loggerLink,
+  splitLink,
+} from "@trpc/client";
 import type { TRPCCombinedDataTransformer } from "@trpc/server";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson, { SuperJSON } from "superjson";
+
 import { TRPCProvider } from "@/lib/trpc/react";
 import type { TRPCRouter } from "@/server/router";
+
+declare module "@tanstack/react-query" {
+  // biome-ignore lint/nursery/useConsistentTypeDefinitions: module augmentation must use interface
+  interface Register {
+    defaultError: Error;
+    mutationMeta: Record<string, unknown> & {
+      errorMessage?: string;
+      invalidatesQuery?: QueryKey[];
+      successMessage?: string;
+      toastOnError?: boolean;
+      toastOnSuccess?: boolean;
+    };
+  }
+}
 
 export const transformer: TRPCCombinedDataTransformer = {
   input: {
@@ -53,7 +75,8 @@ export const trpcClient = createTRPCClient<TRPCRouter>({
   links: [
     loggerLink({
       enabled: (op) =>
-        process.env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
+        process.env.NODE_ENV === "development" ||
+        (op.direction === "down" && op.result instanceof Error),
     }),
     splitLink({
       condition: (op) => isNonJsonSerializable(op.input),
@@ -83,13 +106,28 @@ export const trpcClient = createTRPCClient<TRPCRouter>({
   ],
 });
 
-export const createQueryClient = () =>
-  new QueryClient({
+let browserQueryClient: QueryClient | undefined;
+
+export const createQueryClient = () => {
+  const queryClient = new QueryClient({
     defaultOptions: {
       dehydrate: { serializeData: superjson.serialize },
       hydrate: { deserializeData: superjson.deserialize },
     },
     queryCache: new QueryCache(),
+  });
+
+  return queryClient;
+};
+
+export const getQueryClient = createIsomorphicFn()
+  .server(() => createQueryClient())
+  .client(() => {
+    if (!browserQueryClient) {
+      browserQueryClient = createQueryClient();
+    }
+
+    return browserQueryClient;
   });
 
 export const createServerHelpers = ({ queryClient }: { queryClient: QueryClient }) => {
@@ -100,7 +138,13 @@ export const createServerHelpers = ({ queryClient }: { queryClient: QueryClient 
   return serverHelpers;
 };
 
-export function Provider({ children, queryClient }: { children: React.ReactNode; queryClient: QueryClient }) {
+export function Provider({
+  children,
+  queryClient,
+}: {
+  children: React.ReactNode;
+  queryClient: QueryClient;
+}) {
   return (
     <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
       {children}

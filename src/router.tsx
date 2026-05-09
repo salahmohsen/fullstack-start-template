@@ -1,19 +1,23 @@
-/** biome-ignore-all lint/nursery/useConsistentTypeDefinitions: <explanation> */
+/** biome-ignore-all lint/nursery/useConsistentTypeDefinitions: module augmentation below must use interface */
 import { createRouter as createTanstackRouter, ErrorComponent } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import * as TanstackQuery from "./lib/trpc/root-provider";
 
-// Import the generated route tree
-import { routeTree } from "./routeTree.gen";
-
-import "./styles.css";
 import DefaultLoading from "./components/default-loading";
 import NotFound from "./components/not-found";
 
+import "./styles.css";
+import {
+  createServerHelpers,
+  getQueryClient,
+  Provider as QueryProvider,
+} from "./lib/trpc/root-provider";
+// Import the generated route tree
+import { routeTree } from "./routeTree.gen";
+
 // Create a new router instance
 export const getRouter = () => {
-  const queryClient = TanstackQuery.createQueryClient();
-  const serverHelpers = TanstackQuery.createServerHelpers({
+  const queryClient = getQueryClient();
+  const serverHelpers = createServerHelpers({
     queryClient,
   });
   const router = createTanstackRouter({
@@ -31,7 +35,7 @@ export const getRouter = () => {
     defaultNotFoundComponent: NotFound,
     defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
     Wrap: (props: { children: React.ReactNode }) => (
-      <TanstackQuery.Provider queryClient={queryClient}>{props.children}</TanstackQuery.Provider>
+      <QueryProvider queryClient={queryClient}>{props.children}</QueryProvider>
     ),
   });
 

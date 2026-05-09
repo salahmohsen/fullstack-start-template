@@ -2,6 +2,7 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import resourcesToBackend from "i18next-resources-to-backend";
 import { initReactI18next } from "react-i18next";
+
 import { resources } from "./resources";
 
 export type Language = keyof typeof resources;
@@ -11,15 +12,15 @@ export const languages = Object.keys(resources);
 const runsOnServerSide = typeof window === "undefined";
 
 // Cookie settings for client-side only
-const cookieSettings = !runsOnServerSide
-  ? {
+const cookieSettings = runsOnServerSide
+  ? {}
+  : {
       lookupCookie: "i18next",
       cookieExpirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), // 1 year
       cookieDomain: window.location.hostname,
       cookieSecure: window.location.protocol === "https:",
       caches: ["cookie"],
-    }
-  : {};
+    };
 
 i18n
   .use(initReactI18next)

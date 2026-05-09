@@ -9,8 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardLayoutRouteImport } from './routes/dashboard/layout'
-import { Route as authLayoutRouteImport } from './routes/(auth)/layout'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as DashboardTanstackDbExampleRouteImport } from './routes/dashboard/tanstack-db-example'
@@ -19,6 +18,7 @@ import { Route as DotwellKnownOauthAuthorizationServerRouteImport } from './rout
 import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-password'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authLayoutRouteImport } from './routes/(auth)/layout'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as DashboardWorkspaceIndexRouteImport } from './routes/dashboard/workspace/index'
 import { Route as DashboardSettingsIndexRouteImport } from './routes/dashboard/settings/index'
@@ -39,19 +39,15 @@ import { Route as ApiAiMcpTransportRouteImport } from './routes/api/ai/mcp/$tran
 import { Route as ApiAiChatRagRouteImport } from './routes/api/ai/chat.rag'
 import { Route as ApiAiChatImageGenerationRouteImport } from './routes/api/ai/chat.image.generation'
 
-const DashboardLayoutRoute = DashboardLayoutRouteImport.update({
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authLayoutRoute = authLayoutRouteImport.update({
-  id: '/(auth)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/(public)/',
@@ -62,13 +58,13 @@ const DashboardTanstackDbExampleRoute =
   DashboardTanstackDbExampleRouteImport.update({
     id: '/tanstack-db-example',
     path: '/tanstack-db-example',
-    getParentRoute: () => DashboardLayoutRoute,
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardProtectExamplesRoute =
   DashboardProtectExamplesRouteImport.update({
     id: '/protect-examples',
     path: '/protect-examples',
-    getParentRoute: () => DashboardLayoutRoute,
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DotwellKnownOauthAuthorizationServerRoute =
   DotwellKnownOauthAuthorizationServerRouteImport.update({
@@ -77,70 +73,75 @@ const DotwellKnownOauthAuthorizationServerRoute =
     getParentRoute: () => rootRouteImport,
   } as any)
 const authResetPasswordRoute = authResetPasswordRouteImport.update({
-  id: '/reset-password',
+  id: '/(auth)/reset-password',
   path: '/reset-password',
-  getParentRoute: () => authLayoutRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authRegisterRoute = authRegisterRouteImport.update({
-  id: '/register',
+  id: '/(auth)/register',
   path: '/register',
-  getParentRoute: () => authLayoutRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
-  id: '/login',
+  id: '/(auth)/login',
   path: '/login',
-  getParentRoute: () => authLayoutRoute,
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authLayoutRoute = authLayoutRouteImport.update({
+  id: '/(auth)/layout',
+  path: '/layout',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
-  id: '/forgot-password',
+  id: '/(auth)/forgot-password',
   path: '/forgot-password',
-  getParentRoute: () => authLayoutRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardWorkspaceIndexRoute = DashboardWorkspaceIndexRouteImport.update({
   id: '/workspace/',
   path: '/workspace/',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardSettingsIndexRoute = DashboardSettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardSettingsEnhancedIndexRoute =
   DashboardSettingsEnhancedIndexRouteImport.update({
     id: '/settings-enhanced/',
     path: '/settings-enhanced/',
-    getParentRoute: () => DashboardLayoutRoute,
+    getParentRoute: () => DashboardRouteRoute,
   } as any)
 const DashboardChatIndexRoute = DashboardChatIndexRouteImport.update({
   id: '/chat/',
   path: '/chat/',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardAdminIndexRoute = DashboardAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const authTwoFactorIndexRoute = authTwoFactorIndexRouteImport.update({
-  id: '/two-factor/',
+  id: '/(auth)/two-factor/',
   path: '/two-factor/',
-  getParentRoute: () => authLayoutRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardChatVercelRoute = DashboardChatVercelRouteImport.update({
   id: '/chat/vercel',
   path: '/chat/vercel',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardChatRagRoute = DashboardChatRagRouteImport.update({
   id: '/chat/rag',
   path: '/chat/rag',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardAdminUsersRoute = DashboardAdminUsersRouteImport.update({
   id: '/admin/users',
   path: '/admin/users',
-  getParentRoute: () => DashboardLayoutRoute,
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
@@ -158,15 +159,15 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const authTwoFactorOtpRoute = authTwoFactorOtpRouteImport.update({
-  id: '/two-factor/otp',
+  id: '/(auth)/two-factor/otp',
   path: '/two-factor/otp',
-  getParentRoute: () => authLayoutRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authAcceptInvitationInvitationIdIndexRoute =
   authAcceptInvitationInvitationIdIndexRouteImport.update({
-    id: '/accept-invitation/$invitationId/',
+    id: '/(auth)/accept-invitation/$invitationId/',
     path: '/accept-invitation/$invitationId/',
-    getParentRoute: () => authLayoutRoute,
+    getParentRoute: () => rootRouteImport,
   } as any)
 const ApiAiVercelChatRoute = ApiAiVercelChatRouteImport.update({
   id: '/api/ai/vercel/chat',
@@ -191,15 +192,16 @@ const ApiAiChatImageGenerationRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof publicIndexRoute
-  '/dashboard': typeof DashboardLayoutRouteWithChildren
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
+  '/layout': typeof authLayoutRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/reset-password': typeof authResetPasswordRoute
   '/.well-known/oauth-authorization-server': typeof DotwellKnownOauthAuthorizationServerRoute
   '/dashboard/protect-examples': typeof DashboardProtectExamplesRoute
   '/dashboard/tanstack-db-example': typeof DashboardTanstackDbExampleRoute
+  '/': typeof publicIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/two-factor/otp': typeof authTwoFactorOtpRoute
   '/api/ai/chat': typeof ApiAiChatRouteWithChildren
@@ -208,27 +210,28 @@ export interface FileRoutesByFullPath {
   '/dashboard/admin/users': typeof DashboardAdminUsersRoute
   '/dashboard/chat/rag': typeof DashboardChatRagRoute
   '/dashboard/chat/vercel': typeof DashboardChatVercelRoute
-  '/two-factor': typeof authTwoFactorIndexRoute
-  '/dashboard/admin': typeof DashboardAdminIndexRoute
-  '/dashboard/chat': typeof DashboardChatIndexRoute
-  '/dashboard/settings-enhanced': typeof DashboardSettingsEnhancedIndexRoute
-  '/dashboard/settings': typeof DashboardSettingsIndexRoute
-  '/dashboard/workspace': typeof DashboardWorkspaceIndexRoute
+  '/two-factor/': typeof authTwoFactorIndexRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
+  '/dashboard/chat/': typeof DashboardChatIndexRoute
+  '/dashboard/settings-enhanced/': typeof DashboardSettingsEnhancedIndexRoute
+  '/dashboard/settings/': typeof DashboardSettingsIndexRoute
+  '/dashboard/workspace/': typeof DashboardWorkspaceIndexRoute
   '/api/ai/chat/rag': typeof ApiAiChatRagRoute
   '/api/ai/mcp/$transport': typeof ApiAiMcpTransportRoute
   '/api/ai/vercel/chat': typeof ApiAiVercelChatRoute
-  '/accept-invitation/$invitationId': typeof authAcceptInvitationInvitationIdIndexRoute
+  '/accept-invitation/$invitationId/': typeof authAcceptInvitationInvitationIdIndexRoute
   '/api/ai/chat/image/generation': typeof ApiAiChatImageGenerationRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof publicIndexRoute
   '/forgot-password': typeof authForgotPasswordRoute
+  '/layout': typeof authLayoutRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/reset-password': typeof authResetPasswordRoute
   '/.well-known/oauth-authorization-server': typeof DotwellKnownOauthAuthorizationServerRoute
   '/dashboard/protect-examples': typeof DashboardProtectExamplesRoute
   '/dashboard/tanstack-db-example': typeof DashboardTanstackDbExampleRoute
+  '/': typeof publicIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/two-factor/otp': typeof authTwoFactorOtpRoute
   '/api/ai/chat': typeof ApiAiChatRouteWithChildren
@@ -251,9 +254,9 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/(auth)': typeof authLayoutRouteWithChildren
-  '/dashboard': typeof DashboardLayoutRouteWithChildren
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
+  '/(auth)/layout': typeof authLayoutRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/(auth)/reset-password': typeof authResetPasswordRoute
@@ -284,15 +287,16 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/dashboard'
     | '/forgot-password'
+    | '/layout'
     | '/login'
     | '/register'
     | '/reset-password'
     | '/.well-known/oauth-authorization-server'
     | '/dashboard/protect-examples'
     | '/dashboard/tanstack-db-example'
+    | '/'
     | '/dashboard/'
     | '/two-factor/otp'
     | '/api/ai/chat'
@@ -301,27 +305,28 @@ export interface FileRouteTypes {
     | '/dashboard/admin/users'
     | '/dashboard/chat/rag'
     | '/dashboard/chat/vercel'
-    | '/two-factor'
-    | '/dashboard/admin'
-    | '/dashboard/chat'
-    | '/dashboard/settings-enhanced'
-    | '/dashboard/settings'
-    | '/dashboard/workspace'
+    | '/two-factor/'
+    | '/dashboard/admin/'
+    | '/dashboard/chat/'
+    | '/dashboard/settings-enhanced/'
+    | '/dashboard/settings/'
+    | '/dashboard/workspace/'
     | '/api/ai/chat/rag'
     | '/api/ai/mcp/$transport'
     | '/api/ai/vercel/chat'
-    | '/accept-invitation/$invitationId'
+    | '/accept-invitation/$invitationId/'
     | '/api/ai/chat/image/generation'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/forgot-password'
+    | '/layout'
     | '/login'
     | '/register'
     | '/reset-password'
     | '/.well-known/oauth-authorization-server'
     | '/dashboard/protect-examples'
     | '/dashboard/tanstack-db-example'
+    | '/'
     | '/dashboard'
     | '/two-factor/otp'
     | '/api/ai/chat'
@@ -343,9 +348,9 @@ export interface FileRouteTypes {
     | '/api/ai/chat/image/generation'
   id:
     | '__root__'
-    | '/(auth)'
     | '/dashboard'
     | '/(auth)/forgot-password'
+    | '/(auth)/layout'
     | '/(auth)/login'
     | '/(auth)/register'
     | '/(auth)/reset-password'
@@ -375,15 +380,22 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  authLayoutRoute: typeof authLayoutRouteWithChildren
-  DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
+  authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authLayoutRoute: typeof authLayoutRoute
+  authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
+  authResetPasswordRoute: typeof authResetPasswordRoute
   DotwellKnownOauthAuthorizationServerRoute: typeof DotwellKnownOauthAuthorizationServerRoute
   publicIndexRoute: typeof publicIndexRoute
+  authTwoFactorOtpRoute: typeof authTwoFactorOtpRoute
   ApiAiChatRoute: typeof ApiAiChatRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
+  authTwoFactorIndexRoute: typeof authTwoFactorIndexRoute
   ApiAiMcpTransportRoute: typeof ApiAiMcpTransportRoute
   ApiAiVercelChatRoute: typeof ApiAiVercelChatRoute
+  authAcceptInvitationInvitationIdIndexRoute: typeof authAcceptInvitationInvitationIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -392,14 +404,7 @@ declare module '@tanstack/react-router' {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardLayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)': {
-      id: '/(auth)'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof authLayoutRouteImport
+      preLoaderRoute: typeof DashboardRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -407,7 +412,7 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/(public)/': {
       id: '/(public)/'
@@ -421,14 +426,14 @@ declare module '@tanstack/react-router' {
       path: '/tanstack-db-example'
       fullPath: '/dashboard/tanstack-db-example'
       preLoaderRoute: typeof DashboardTanstackDbExampleRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/protect-examples': {
       id: '/dashboard/protect-examples'
       path: '/protect-examples'
       fullPath: '/dashboard/protect-examples'
       preLoaderRoute: typeof DashboardProtectExamplesRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/.well-known/oauth-authorization-server': {
       id: '/.well-known/oauth-authorization-server'
@@ -442,91 +447,98 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof authResetPasswordRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/register': {
       id: '/(auth)/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof authRegisterRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof authLoginRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/layout': {
+      id: '/(auth)/layout'
+      path: '/layout'
+      fullPath: '/layout'
+      preLoaderRoute: typeof authLayoutRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/forgot-password': {
       id: '/(auth)/forgot-password'
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof authForgotPasswordRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/workspace/': {
       id: '/dashboard/workspace/'
       path: '/workspace'
-      fullPath: '/dashboard/workspace'
+      fullPath: '/dashboard/workspace/'
       preLoaderRoute: typeof DashboardWorkspaceIndexRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/settings/': {
       id: '/dashboard/settings/'
       path: '/settings'
-      fullPath: '/dashboard/settings'
+      fullPath: '/dashboard/settings/'
       preLoaderRoute: typeof DashboardSettingsIndexRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/settings-enhanced/': {
       id: '/dashboard/settings-enhanced/'
       path: '/settings-enhanced'
-      fullPath: '/dashboard/settings-enhanced'
+      fullPath: '/dashboard/settings-enhanced/'
       preLoaderRoute: typeof DashboardSettingsEnhancedIndexRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/chat/': {
       id: '/dashboard/chat/'
       path: '/chat'
-      fullPath: '/dashboard/chat'
+      fullPath: '/dashboard/chat/'
       preLoaderRoute: typeof DashboardChatIndexRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/admin/': {
       id: '/dashboard/admin/'
       path: '/admin'
-      fullPath: '/dashboard/admin'
+      fullPath: '/dashboard/admin/'
       preLoaderRoute: typeof DashboardAdminIndexRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/(auth)/two-factor/': {
       id: '/(auth)/two-factor/'
       path: '/two-factor'
-      fullPath: '/two-factor'
+      fullPath: '/two-factor/'
       preLoaderRoute: typeof authTwoFactorIndexRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/chat/vercel': {
       id: '/dashboard/chat/vercel'
       path: '/chat/vercel'
       fullPath: '/dashboard/chat/vercel'
       preLoaderRoute: typeof DashboardChatVercelRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/chat/rag': {
       id: '/dashboard/chat/rag'
       path: '/chat/rag'
       fullPath: '/dashboard/chat/rag'
       preLoaderRoute: typeof DashboardChatRagRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/admin/users': {
       id: '/dashboard/admin/users'
       path: '/admin/users'
       fullPath: '/dashboard/admin/users'
       preLoaderRoute: typeof DashboardAdminUsersRouteImport
-      parentRoute: typeof DashboardLayoutRoute
+      parentRoute: typeof DashboardRouteRoute
     }
     '/api/trpc/$': {
       id: '/api/trpc/$'
@@ -554,14 +566,14 @@ declare module '@tanstack/react-router' {
       path: '/two-factor/otp'
       fullPath: '/two-factor/otp'
       preLoaderRoute: typeof authTwoFactorOtpRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/accept-invitation/$invitationId/': {
       id: '/(auth)/accept-invitation/$invitationId/'
       path: '/accept-invitation/$invitationId'
-      fullPath: '/accept-invitation/$invitationId'
+      fullPath: '/accept-invitation/$invitationId/'
       preLoaderRoute: typeof authAcceptInvitationInvitationIdIndexRouteImport
-      parentRoute: typeof authLayoutRoute
+      parentRoute: typeof rootRouteImport
     }
     '/api/ai/vercel/chat': {
       id: '/api/ai/vercel/chat'
@@ -594,32 +606,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface authLayoutRouteChildren {
-  authForgotPasswordRoute: typeof authForgotPasswordRoute
-  authLoginRoute: typeof authLoginRoute
-  authRegisterRoute: typeof authRegisterRoute
-  authResetPasswordRoute: typeof authResetPasswordRoute
-  authTwoFactorOtpRoute: typeof authTwoFactorOtpRoute
-  authTwoFactorIndexRoute: typeof authTwoFactorIndexRoute
-  authAcceptInvitationInvitationIdIndexRoute: typeof authAcceptInvitationInvitationIdIndexRoute
-}
-
-const authLayoutRouteChildren: authLayoutRouteChildren = {
-  authForgotPasswordRoute: authForgotPasswordRoute,
-  authLoginRoute: authLoginRoute,
-  authRegisterRoute: authRegisterRoute,
-  authResetPasswordRoute: authResetPasswordRoute,
-  authTwoFactorOtpRoute: authTwoFactorOtpRoute,
-  authTwoFactorIndexRoute: authTwoFactorIndexRoute,
-  authAcceptInvitationInvitationIdIndexRoute:
-    authAcceptInvitationInvitationIdIndexRoute,
-}
-
-const authLayoutRouteWithChildren = authLayoutRoute._addFileChildren(
-  authLayoutRouteChildren,
-)
-
-interface DashboardLayoutRouteChildren {
+interface DashboardRouteRouteChildren {
   DashboardProtectExamplesRoute: typeof DashboardProtectExamplesRoute
   DashboardTanstackDbExampleRoute: typeof DashboardTanstackDbExampleRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
@@ -633,7 +620,7 @@ interface DashboardLayoutRouteChildren {
   DashboardWorkspaceIndexRoute: typeof DashboardWorkspaceIndexRoute
 }
 
-const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardProtectExamplesRoute: DashboardProtectExamplesRoute,
   DashboardTanstackDbExampleRoute: DashboardTanstackDbExampleRoute,
   DashboardIndexRoute: DashboardIndexRoute,
@@ -647,8 +634,8 @@ const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardWorkspaceIndexRoute: DashboardWorkspaceIndexRoute,
 }
 
-const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
-  DashboardLayoutRouteChildren,
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
 )
 
 interface ApiAiChatRouteChildren {
@@ -666,16 +653,24 @@ const ApiAiChatRouteWithChildren = ApiAiChatRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  authLayoutRoute: authLayoutRouteWithChildren,
-  DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
+  authForgotPasswordRoute: authForgotPasswordRoute,
+  authLayoutRoute: authLayoutRoute,
+  authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
+  authResetPasswordRoute: authResetPasswordRoute,
   DotwellKnownOauthAuthorizationServerRoute:
     DotwellKnownOauthAuthorizationServerRoute,
   publicIndexRoute: publicIndexRoute,
+  authTwoFactorOtpRoute: authTwoFactorOtpRoute,
   ApiAiChatRoute: ApiAiChatRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
+  authTwoFactorIndexRoute: authTwoFactorIndexRoute,
   ApiAiMcpTransportRoute: ApiAiMcpTransportRoute,
   ApiAiVercelChatRoute: ApiAiVercelChatRoute,
+  authAcceptInvitationInvitationIdIndexRoute:
+    authAcceptInvitationInvitationIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
