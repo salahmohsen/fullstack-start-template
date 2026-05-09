@@ -46,6 +46,10 @@ export const useLogin = () => {
       return result;
     },
     onSuccess(response) {
+      if (response.data.user.twoFactorEnabled) {
+        console.log("Two-factor authentication required");
+        return;
+      }
       if (response.data?.user.id) {
         router.navigate({ to: "/dashboard" });
       }
@@ -108,11 +112,15 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   return useMutation({
-    mutationFn: async () => await authClient.signOut(),
-    onSettled: async () => {
-      queryClient.removeQueries({ queryKey: authQueryKeys.session });
-      await router.navigate({ to: "/login" });
-    },
+    mutationFn: async () =>
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: async () => {
+            queryClient.removeQueries({ queryKey: authQueryKeys.session });
+            await router.navigate({ to: "/login" });
+          },
+        },
+      }),
   });
 };
 

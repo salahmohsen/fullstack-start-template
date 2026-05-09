@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/card";
 import { FieldSet } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
+import { useAuthHelpers } from "./auth-hooks";
 
 const twoFactorSchema = z.object({
   totpCode: z
@@ -26,9 +26,11 @@ const twoFactorSchema = z.object({
     .regex(/^\d+$/, "TOTP code must contain only digits"),
 });
 
-export default function Component() {
+export const TwoFactorForm = () => {
   const { t } = useTranslation();
   const [success, setSuccess] = useState(false);
+  const { verifyTwoFactor } = useAuthHelpers();
+  const navigate = useNavigate();
 
   const form = useAppForm({
     defaultValues: {
@@ -38,16 +40,18 @@ export default function Component() {
       onChange: twoFactorSchema,
     },
     onSubmit: async ({ value }) => {
-      try {
-        const res = await authClient.twoFactor.verifyTotp({
-          code: value.totpCode,
-        });
-        if (res.data?.token) {
-          setSuccess(true);
-        }
-      } catch {
-        // Error handling is done via form validation
-      }
+      verifyTwoFactor.mutate(
+        { code: value.totpCode },
+        {
+          onSuccess: () => {
+            setSuccess(true);
+            navigate({ to: "/dashboard" });
+          },
+          onError: () => {
+            setSuccess(false);
+          },
+        },
+      );
     },
   });
 
@@ -94,7 +98,11 @@ export default function Component() {
                       disabled={!canSubmit || isSubmitting}
                       type="submit"
                     >
-                      {isSubmitting ? <Spinner /> : t("VERIFY")}
+                      {isSubmitting || verifyTwoFactor.isPending ? (
+                        <Spinner />
+                      ) : (
+                        t("VERIFY")
+                      )}
                     </Button>
                   </ButtonGroup>
                 )}
@@ -112,4 +120,4 @@ export default function Component() {
       </Card>
     </main>
   );
-}
+};

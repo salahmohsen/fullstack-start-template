@@ -19,9 +19,14 @@ import {
 } from "./permissions";
 
 export const authClient = createAuthClient({
-  baseURL: resolveAuthBaseUrl(import.meta.env.VITE_SERVER_URL, globalThis.location?.origin),
+  baseURL: resolveAuthBaseUrl(
+    import.meta.env.VITE_SERVER_URL,
+    globalThis.location?.origin,
+  ),
   plugins: [
-    twoFactorClient(),
+    twoFactorClient({
+      twoFactorPage: "/two-factor",
+    }),
     passkeyClient(),
     adminClient({
       ac,
