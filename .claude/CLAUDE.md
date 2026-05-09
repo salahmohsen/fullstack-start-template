@@ -1,8 +1,24 @@
 ---
-description: Ultracite Rules
+description: Project context + Ultracite Rules
 globs: "**/*.{ts,tsx,js,jsx}"
 alwaysApply: true
 ---
+
+# Project Context
+
+TanStack Start app on Vite Plus + Nitro. React 19 with React Compiler. Bun is the package manager.
+
+Stack reference points:
+
+- **UI:** shadcn/ui (`base-nova` theme, `neutral` baseColor) on `@base-ui/react` primitives. Compose with `render={...}`, never `asChild`. Tailwind v4 with `tw-animate-css` and `shadcn/tailwind.css`.
+- **Forms:** `@tanstack/react-form-start` via `useAppForm` exported from `src/components/forms`. Do not use `react-hook-form`.
+- **Auth:** Better Auth ^1.6.9 + `@better-auth/passkey` + `tanstackStartCookies`. Use `resolveAuthBaseUrl` and `resolveBetterAuthSecret` helpers.
+- **Data:** Drizzle ORM on Neon (`@neondatabase/serverless`). Migrations regenerated; schemas under `src/lib/db/schema/`. tRPC v11 with isomorphic `getQueryClient`.
+- **Routing:** TanStack Router file-based. Dashboard layout is `src/routes/dashboard/route.tsx` (no `layout` routeToken).
+- **Tooling:** `vp` (Vite Plus) provides `dev`, `build`, `fmt` (oxfmt), `check` (oxlint). React Compiler runs via `@rolldown/plugin-babel`. Biome and Prettier are removed.
+- **Testing:** Vitest. Tests colocate as `*.test.ts(x)`.
+
+# Ultracite Rules
 
 - Don't use `accessKey` attribute on any HTML element.
 - Don't set `aria-hidden="true"` on focusable elements.

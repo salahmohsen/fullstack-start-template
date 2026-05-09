@@ -1,7 +1,39 @@
-# shadcn instructions
+---
+description: Project overview and shadcn/ui instructions
+alwaysApply: true
+---
 
-Use the latest version of Shadcn to install new components, like this command to add a button component:
+# Project Stack Overview
+
+This is a TanStack Start app on Vite Plus + Nitro with React 19 (React Compiler enabled), tRPC, Drizzle ORM on Neon Postgres, Better Auth (with passkey + tanstack-start cookies), TanStack Query/DB/Form/Router, and shadcn/ui (`base-nova` theme) on Base UI primitives.
+
+Key paths:
+
+- `src/components/ui/` — shadcn primitives on `@base-ui/react`. Use `render={...}` (not `asChild`) for slot-style composition.
+- `src/components/forms/` — TanStack Form fields built on `@tanstack/react-form-start` (`useAppForm`, `withForm`, `withFieldGroup`, `extendForm`).
+- `src/lib/auth/` — Better Auth setup. Use `resolveAuthBaseUrl` and `resolveBetterAuthSecret` helpers; do not hardcode env reads.
+- `src/lib/db/` — Drizzle ORM. Schemas live under `schema/` and migrations under `migrations/`.
+- `src/lib/trpc/` — tRPC root provider with isomorphic `getQueryClient`.
+- `src/routes/` — file-based routes. Dashboard layout lives at `src/routes/dashboard/route.tsx` (no `layout` routeToken).
+
+# Tooling
+
+- Use `vp` (Vite Plus) for everything: `bun run dev`, `bun run build`, `bun run check`, `bun run format`.
+- Lint/format is oxlint + oxfmt configured inline in `vite.config.ts`.
+- Do not reintroduce Biome, Prettier, react-hook-form, or `@radix-ui/*` direct deps — replaced.
+
+# shadcn/ui
+
+Install components with the latest shadcn CLI under the configured `base-nova` style:
 
 ```bash
-pnpx shadcn@latest add button
+bunx shadcn@latest add <component>
+# or
+bun run add-ui-components <component>
+```
+
+Components import primitives from `@base-ui/react` (e.g. `Button as ButtonPrimitive` from `@base-ui/react/button`). Use the `render` prop pattern when composing:
+
+```tsx
+<DropdownMenuTrigger render={<Button variant="outline" />} />
 ```

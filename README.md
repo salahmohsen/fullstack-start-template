@@ -12,18 +12,18 @@ This project provides a solid foundation for building modern web applications us
 
 ## Core Technologies
 
-- **Framework:** [TanStack Start](https://tanstack.com/start/v1) on [Vite](https://vitejs.dev/) + [Vinxi](https://vinxi.dev/) (Modern React foundation with SSR)
+- **Framework:** [TanStack Start](https://tanstack.com/start/v1) on [Vite Plus](https://viteplus.dev/) + [Nitro](https://nitro.build/) (Modern React foundation with SSR, React Compiler enabled)
 - **Routing:** [TanStack Router](https://tanstack.com/router/v1) (Type-safe client and server routing)
 - **API:** [tRPC](https://trpc.io/) (End-to-end typesafe APIs)
-- **Database:** [Drizzle ORM](https://orm.drizzle.team/) with [Neon](https://neon.com/) + [Vite Plugin](https://www.npmjs.com/package/@neondatabase/vite-plugin-postgres) (Auto-provisioned serverless PostgreSQL)
-- **UI:** [React 19](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/), [Lucide Icons](https://lucide.dev/)
+- **Database:** [Drizzle ORM](https://orm.drizzle.team/) with [Neon](https://neon.com/) + [vite-plugin-neon-new](https://www.npmjs.com/package/vite-plugin-neon-new) (Auto-provisioned serverless PostgreSQL)
+- **UI:** [React 19](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/) (`base-nova` theme) on [Base UI](https://base-ui.com/) primitives, [Lucide Icons](https://lucide.dev/)
 - **State Management:** [TanStack Query](https://tanstack.com/query/v5) (Server State), [TanStack Store](https://tanstack.com/store/v0) (Client State), [TanStack DB](https://tanstack.com/db/latest) (Reactive Collections)
-- **Forms:** [React Hook Form](https://react-hook-form.com/), [TanStack Form](https://tanstack.com/form/v1), [Zod](https://zod.dev/) (Validation)
-- **Authentication:** [Better Auth](https://github.com/BetterTyped/better-auth) (Details below)
+- **Forms:** [TanStack Form](https://tanstack.com/form/v1) via `@tanstack/react-form-start`, [Zod](https://zod.dev/) (Validation)
+- **Authentication:** [Better Auth](https://www.better-auth.com/) with `@better-auth/passkey` (Details below)
 - **Email:** [Resend](https://resend.com/), [React Email](https://react.email/) (Transactional emails)
 - **Monitoring:** [Sentry](https://sentry.io/) (Error tracking and performance monitoring)
 - **Testing:** [Vitest](https://vitest.dev/) (Unit/Integration testing)
-- **Tooling & DX:** [Biome](https://biomejs.dev/) (Linting/Formatting), [T3 Env](https://github.com/t3-oss/t3-env), [TypeScript](https://www.typescriptlang.org/)
+- **Tooling & DX:** [Vite Plus](https://viteplus.dev/) toolkit (oxlint + oxfmt via `vp` CLI), [T3 Env](https://github.com/t3-oss/t3-env), [TypeScript](https://www.typescriptlang.org/)
 - **AI:** [@ai-sdk/react](https://sdk.vercel.ai/), [ai](https://sdk.vercel.ai/) (Ready for AI features)
 - **i18n:** [i18next](https://www.i18next.com/) (Internationalization)
 
@@ -70,7 +70,7 @@ bun run db:neon-setup
 # This runs: npx neondb --yes
 ```
 
-**Method C: Automatic Vite Plugin (Recommended)** 3. **Already configured!** The [`@neondatabase/vite-plugin-postgres`](https://www.npmjs.com/package/@neondatabase/vite-plugin-postgres) plugin automatically:
+**Method C: Automatic Vite Plugin (Recommended)** 3. **Already configured!** The [`vite-plugin-neon-new`](https://www.npmjs.com/package/vite-plugin-neon-new) plugin automatically:
 
 - Checks for `DATABASE_URL` in your `.env` file on first `bun run dev`
 - Creates a claimable Neon database if not found
@@ -105,7 +105,7 @@ DATABASE_URL=postgresql://[user]:[password]@[endpoint]/[database]?sslmode=requir
 
 ### Neon Features in This Boilerplate
 
-- **Automatic Database Provisioning**: Pre-configured with [`@neondatabase/vite-plugin-postgres`](https://www.npmjs.com/package/@neondatabase/vite-plugin-postgres) for zero-config database setup
+- **Automatic Database Provisioning**: Pre-configured with [`vite-plugin-neon-new`](https://www.npmjs.com/package/vite-plugin-neon-new) for zero-config database setup
 - **Drizzle Integration**: Pre-configured with `@neondatabase/serverless` for optimal performance
 - **Connection Pooling**: Built-in pooling for better connection management
 - **Type Safety**: Full TypeScript support with Drizzle ORM
@@ -414,20 +414,22 @@ The AI assistant will automatically determine which tools to use based on your r
 
 ### Robust Authentication
 
-Powered by [Better Auth](https://github.com/BetterTyped/better-auth), providing secure user management features out-of-the-box:
+Powered by [Better Auth](https://www.better-auth.com/) with `@better-auth/passkey` and the `tanstack-start` cookies plugin, providing secure user management features out-of-the-box:
 
-- **Core:** Sign Up, Sign In, Password Reset Flow (Forgot/Reset).
-- **Security:** Two-Factor Authentication (OTP).
-- **User Management:** Invitation Acceptance Flow.
+- **Core:** Sign Up, Sign In, Password Reset Flow (Forgot/Reset), Magic Links, Email OTP.
+- **Security:** Two-Factor Authentication (TOTP/OTP), Passkey/WebAuthn support.
+- **Admin & Orgs:** Admin plugin (user management, role assignment), Organization plugin (multi-tenancy).
+- **Helpers:** `resolveAuthBaseUrl` (falls back to runtime origin) and `resolveBetterAuthSecret` (development default + production guard) in `src/lib/auth/`.
+- **MCP plugin & OpenAPI:** Better Auth `mcp` and `openAPI` plugins enabled.
 - **Documentation:** API reference available at `http://localhost:3000/api/auth/reference` when running the application.
-- _(See TODO list for planned additions like Passkey, Admin Dashboard, Org Support)_
 
 ### Development Experience
 
-- **Hot Module Replacement (HMR):** Fast development cycles with Vite.
+- **Hot Module Replacement (HMR):** Fast development cycles with Vite Plus (`vp dev`).
 - **Type Safety:** End-to-end type safety from database to frontend.
-- **Code Quality:** Integrated linting and formatting with Biome.
+- **Code Quality:** Integrated linting and formatting with `vp` (oxlint + oxfmt). React Hooks, TanStack Router/Query and JSX a11y plugins enabled. React Compiler runs via `@rolldown/plugin-babel`.
 - **Environment Variables:** Type-safe env management with T3 Env.
+- **Testing:** Vitest with unit tests for auth helpers, db setup, resend, tRPC, and components.
 
 ## Getting Started
 
@@ -533,41 +535,51 @@ This project follows a structured organization pattern for better maintainabilit
 
 ```
 src/
-├─ app/                   # App specific files
-├─ components/            # Reusable UI components (including shadcn/ui)
+├─ components/            # Reusable UI components
+│  ├─ ui/                 # shadcn/ui (base-nova) on Base UI primitives
+│  ├─ forms/              # TanStack Form fields (Input, Password, Checkbox, ...)
+│  └─ emails/             # React Email templates
 ├─ features/              # Feature-specific components and logic
-│  ├─ ai-embedding.ts     # Vector embedding generation for RAG functionality
-│  ├─ resource-create.ts  # Knowledge base resource creation
-│  ├─ file-upload.schema.ts # File upload validation schemas
-│  ├─ auth/               # Authentication related features
-│  └─ organization/       # Organization management features
+│  ├─ ai/                 # Chat, RAG, embeddings, MCP tools
+│  ├─ admin/              # Admin dashboard
+│  ├─ auth/               # Authentication forms and hooks
+│  ├─ app/                # App shell (sidebar, nav)
+│  ├─ files/              # File upload
+│  ├─ organization/       # Organization management
+│  ├─ user/               # User profile / settings
+│  └─ workspace/          # Workspace
 ├─ hooks/                 # Custom React hooks
-├─ lib/                   # Core libraries and utilities
-│  ├─ auth/               # Better Auth implementation
-│  ├─ db/                 # Drizzle ORM setup and schema
-│  ├─ intl/               # i18next internationalization setup
-│  ├─ trpc/               # tRPC client and server setup
-│  ├─ env.client.ts       # Type-safe client environment variables (T3 Env)
-│  ├─ env.server.ts       # Type-safe server environment variables
-│  └─ resend.ts           # Email sending with Resend and React Email
-├─ routes/                # TanStack Router routes with file-based routing
-│  ├─ (auth)/             # Authentication related routes (protected)
-│  ├─ (public)/           # Public facing routes
-│  ├─ api/                # API routes
-│  │  ├─ ai/              # AI-related API endpoints
-│  │  │  ├─ chat.ts       # Basic chat API
-│  │  │  ├─ chat.rag.ts   # RAG-enhanced chat API
-│  │  │  └─ chat.image.generation.ts # Image generation chat API
-│  ├─ dashboard/          # Dashboard related routes
-│  │  ├─ chat/            # Chat interface routes
-│  └─ _root.tsx           # Root layout component
-├─ server/                # Server-side code
-│  ├─ router.ts           # Main API router setup
-│  └─ routes/             # Server-side route handlers
-├─ api.ts                 # API client export
-├─ client.tsx             # Client entry point
+├─ lib/
+│  ├─ auth/               # Better Auth (auth.ts, auth-client.ts, permissions.ts,
+│  │                      #   auth-base-url.ts, auth-secret.ts)
+│  ├─ db/                 # Drizzle ORM, schema, migrations,
+│  │                      #   ensure-development-database.ts
+│  ├─ intl/               # i18next setup and locales
+│  ├─ providers/          # React providers (query client provider)
+│  ├─ trpc/               # tRPC client/server setup with isomorphic
+│  │                      #   getQueryClient
+│  ├─ env.client.ts       # Type-safe client env vars (T3 Env)
+│  ├─ env.server.ts       # Type-safe server env vars
+│  ├─ converters.utils.ts # Conversion helpers
+│  ├─ utils.ts            # Misc utilities
+│  └─ resend.ts           # Email sending
+├─ routes/                # TanStack Router file-based routes
+│  ├─ (auth)/             # Authentication routes
+│  ├─ (public)/           # Public routes
+│  ├─ api/                # API routes (auth, trpc, ai)
+│  ├─ dashboard/
+│  │  ├─ route.tsx        # Dashboard root layout (was layout.tsx)
+│  │  ├─ chat/            # Chat interfaces
+│  │  ├─ admin/           # Admin views
+│  │  └─ ...
+│  └─ __root.tsx          # Root layout
+├─ server/                # Server-side code (router + route handlers)
 ├─ router.tsx             # Router configuration
-└─ ssr.tsx                # Server-side rendering setup
+└─ styles.css             # Global Tailwind/shadcn styles
+
+scripts/
+├─ setup-vector-extension.ts
+└─ test-resend-live.ts    # Live Resend send test
 
 public/                   # Static assets
 ```
@@ -576,20 +588,27 @@ The structure organizes code by feature and responsibility, keeping related code
 
 ## Available Scripts
 
-- `bun run dev`: Starts the development server.
-- `bun run build`: Builds the application for production.
+- `bun run dev`: Starts the development server (`vp dev`).
+- `bun run preview`: Serves the built production app locally (`vp preview`).
+- `bun run build`: Builds the application for production (`vp build`).
 - `bun run start`: Starts the production server (requires build first).
-- `bun run serve`: Serves the built production app locally (via Vite preview).
-- `bun run test`: Runs tests using Vitest.
+- `bun run test`: Runs tests using Vitest (`vp run --passWithNoTests`).
+- `bun run test:resend:live`: Sends a real test email through Resend (requires `RESEND_API_KEY` and `TEST_EMAIL`).
 - `bun run db:generate`: Generates Drizzle ORM migration files.
 - `bun run db:push`: Pushes the current Drizzle schema to the database.
 - `bun run db:studio`: Opens Drizzle Kit Studio.
 - `bun run db:neon-setup`: Sets up Neon database integration locally.
 - `bun run db:setup-vector`: Enables the pg_vector extension for AI embedding features.
+- `bun run auth:generate`: Regenerates the Better Auth Drizzle schema.
+- `bun run auth:secret`: Generates a Better Auth secret (`vpx auth@latest secret`).
 - `bun run add-ui-components <component-name>`: Adds shadcn/ui components.
-- `bun run format`: Formats code using Biome.
-- `bun run lint`: Lints code using Biome.
-- `bun run check`: Runs Biome check (format, lint, safety).
+- `bun run format`: Formats code (`vp fmt`, oxfmt).
+- `bun run format:check`: Checks formatting without writing.
+- `bun run check`: Runs `vp check` (lint + format).
+- `bun run check:fix`: Runs `vp check --fix`.
+- `bun run tanstack`: Runs the TanStack CLI (`vp dlx @tanstack/cli@latest`).
+- `bun run intent`: Runs the TanStack Intent CLI.
+- `bun run skills`: Runs the skills CLI.
 
 ## Docker Deployment
 

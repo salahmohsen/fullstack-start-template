@@ -12,6 +12,7 @@ globs: **/*.tsx, **/*.jsx, components/**/*
 - Use composition over inheritance
 - Implement proper prop types with TypeScript
 - Split large components into smaller, focused ones
+- For shadcn primitives, compose with the `render={...}` prop (Base UI pattern). `asChild` is no longer used.
 
 ## Hooks
 - Follow the Rules of Hooks
@@ -30,20 +31,19 @@ globs: **/*.tsx, **/*.jsx, components/**/*
 - Use state management libraries only when necessary
 
 ## Performance
-- Implement proper memoization (useMemo, useCallback)
-- Use React.memo for expensive components
-- Avoid unnecessary re-renders
-- Implement proper lazy loading
+- React Compiler is enabled (`@rolldown/plugin-babel` + `reactCompilerPreset()`). Avoid manual memoization unless the compiler can't optimize the case
+- Trust `react-hooks-js` lint rules (`preserve-manual-memoization`, `set-state-in-effect`, etc.) — fix flagged issues, don't suppress
+- Use React.memo only for measurably expensive components
 - Use proper key props in lists
-- Profile and optimize render performance
+- Profile before optimizing
 
 ## Forms
-- Use controlled components for form inputs
-- Implement proper form validation
-- Handle form submission states properly
-- Show appropriate loading and error states
-- Use form libraries for complex forms
-- Implement proper accessibility for forms
+- Use TanStack Form via `@tanstack/react-form-start` and the project's `useAppForm` from `src/components/forms`
+- Compose forms from the field components (`InputField`, `PasswordField`, `CheckboxField`, `TextareaField`, `InputGroupField`, `InputGroupTextareaField`)
+- Validate with Zod schemas; surface errors via `<FieldInfo />`
+- Do NOT use `react-hook-form` — removed from this project
+- Handle submission and async states with form/field state, show loading and error UI explicitly
+- Implement proper accessibility (labels, descriptions, aria-invalid)
 
 ## Error Handling
 - Implement Error Boundaries
