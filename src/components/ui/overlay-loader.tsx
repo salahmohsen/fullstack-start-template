@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface OverlayLoaderProps {
@@ -31,16 +32,21 @@ export function OverlayLoader({
   };
 
   return (
-    <div className={cn("fixed inset-0 z-50 flex items-center justify-center", backdrops[backdrop], className)}>
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-center justify-center",
+        backdrops[backdrop],
+        className,
+      )}
+    >
       <div className="flex flex-col items-center gap-3">
         <Loader2 className={cn("animate-spin text-primary", spinnerSizes[size])} />
-        {message && <p className="text-sm font-medium text-muted-foreground">{message}</p>}
+        {message ? <p className="text-sm font-medium text-muted-foreground">{message}</p> : null}
       </div>
     </div>
   );
 }
 
-// Component-specific overlay loader
 interface ComponentOverlayLoaderProps {
   isLoading: boolean;
   message?: string;
@@ -65,20 +71,18 @@ export function ComponentOverlayLoader({
   return (
     <div
       className={cn(
-        "absolute inset-0 z-10 flex items-center justify-center",
-        "bg-background/80 backdrop-blur-sm",
+        "absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm",
         className,
       )}
     >
       <div className="flex flex-col items-center gap-2">
         <Loader2 className={cn("animate-spin text-primary", spinnerSizes[size])} />
-        {message && <p className="text-xs font-medium text-muted-foreground">{message}</p>}
+        {message ? <p className="text-xs font-medium text-muted-foreground">{message}</p> : null}
       </div>
     </div>
   );
 }
 
-// Inline loader for smaller spaces
 interface InlineLoaderProps {
   isLoading: boolean;
   message?: string;
@@ -86,7 +90,12 @@ interface InlineLoaderProps {
   className?: string;
 }
 
-export function InlineLoader({ isLoading, message = "Loading...", size = "sm", className }: InlineLoaderProps) {
+export function InlineLoader({
+  isLoading,
+  message = "Loading...",
+  size = "sm",
+  className,
+}: InlineLoaderProps) {
   if (!isLoading) return null;
 
   const spinnerSizes = {
@@ -97,7 +106,7 @@ export function InlineLoader({ isLoading, message = "Loading...", size = "sm", c
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Loader2 className={cn("animate-spin text-muted-foreground", spinnerSizes[size])} />
-      {message && <span className="text-sm text-muted-foreground">{message}</span>}
+      {message ? <span className="text-sm text-muted-foreground">{message}</span> : null}
     </div>
   );
 }
