@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import QRCode from "react-qr-code";
+import { QRCode } from "react-qr-code";
 import { toast } from "sonner";
 import { UAParser } from "ua-parser-js";
 import { z } from "zod";
@@ -113,18 +113,25 @@ export default function UserCard(props: {
     },
     validators: {
       onChange: ({ value }) => {
-        const result = twoFactorVerifyURI
-          ? twoFactorOtpSchema.safeParse({ otp: value.otp })
-          : twoFactorPasswordSchema.safeParse({ password: value.password });
+        // const result = twoFactorVerifyURI
+        //   ? twoFactorOtpSchema.safeParse({ otp: value.otp })
+        //   : twoFactorPasswordSchema.safeParse({ password: value.password });
 
-        if (!result.success && result.error) {
-          const fieldErrors = z.treeifyError(result.error).errors;
-          return {
-            otp: fieldErrors.otp,
-            password: fieldErrors.password,
-          };
+        if (twoFactorVerifyURI) {
+          const result = twoFactorOtpSchema.safeParse({ otp: value.otp });
+          if (!result.success) {
+            const { fieldErrors } = z.flattenError(result.error);
+            return { otp: fieldErrors.otp?.[0] };
+          }
         }
 
+        const result = twoFactorPasswordSchema.safeParse({
+          password: value.password,
+        });
+        if (!result.success) {
+          const { fieldErrors } = z.flattenError(result.error);
+          return { password: fieldErrors.password?.[0] };
+        }
         return undefined;
       },
     },

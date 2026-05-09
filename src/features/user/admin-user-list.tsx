@@ -315,7 +315,10 @@ export function AdminUserList() {
               </div>
 
               {/* Status Filter */}
-              <Select onValueChange={setStatusFilter} value={statusFilter}>
+              <Select
+                onValueChange={(value) => !!value && setStatusFilter(value)}
+                value={statusFilter}
+              >
                 <SelectTrigger className="w-[130px]">
                   <Filter className="mr-2 h-4 w-4" />
                   <SelectValue placeholder="Status" />
@@ -330,7 +333,10 @@ export function AdminUserList() {
               </Select>
 
               {/* Role Filter */}
-              <Select onValueChange={setRoleFilter} value={roleFilter}>
+              <Select
+                onValueChange={(value) => !!value && setRoleFilter(value)}
+                value={roleFilter}
+              >
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder="Role" />
                 </SelectTrigger>
