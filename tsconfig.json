@@ -6,7 +6,7 @@
     "prettier.config.js",
     "vite.config.js",
     "src/lib/intl/react-i18next.d.ts",
-    "src/lib/intl/i18next.d.ts"
+    "src/lib/intl/i18next.d.ts",
   ],
   "compilerOptions": {
     "jsx": "react-jsx",
@@ -22,15 +22,13 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+      "@/*": ["./src/*"],
+    },
+  },
 }
