@@ -35,7 +35,6 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          SENTRY_LOG_LEVEL: debug
 
       - name: List build output
         run: |

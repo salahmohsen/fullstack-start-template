@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/node";
 import { getCookie } from "@tanstack/react-start/server";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
@@ -48,14 +47,9 @@ const t = initTRPC.context<Context>().create({
 
 export const createTRPCRouter = t.router;
 
-const sentryMiddleware = t.middleware(
-  Sentry.trpcMiddleware({
-    attachRpcInput: true,
-  }),
-);
+export const publicProcedure = t.procedure;
 
-export const publicProcedure = t.procedure.use(sentryMiddleware);
-export const protectedProcedure = t.procedure.use(sentryMiddleware).use(({ ctx, next }) => {
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session) {
     throw new TRPCError({
       code: "UNAUTHORIZED",

@@ -1,16 +1,10 @@
-import { wrapCreateRootRouteWithSentry } from "@sentry/tanstackstart-react";
 import { a11yDevtoolsPlugin } from "@tanstack/devtools-a11y/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { TanStackDevtoolsReactPlugin } from "@tanstack/react-devtools";
 import { formDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import {
-  createRootRouteWithContext,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { ThemeProvider } from "next-themes";
@@ -29,36 +23,34 @@ interface MyRouterContext {
   trpc: TRPCOptionsProxy<TRPCRouter>;
 }
 
-export const Route = wrapCreateRootRouteWithSentry(
-  createRootRouteWithContext<MyRouterContext>()({
-    head: () => ({
-      meta: [
-        {
-          charSet: "utf-8",
-        },
-        {
-          name: "viewport",
-          content: "width=device-width, initial-scale=1",
-        },
-        ...seo({
-          title: "Modern Full-Stack Boilerplate",
-          description:
-            "A feature-rich, type-safe starter for building modern web applications with React, tRPC, Drizzle ORM, and more.",
-          keywords:
-            "React, TypeScript, tRPC, Drizzle ORM, TanStack, Full-Stack, Web Development, Boilerplate, SaaS, Starter, Tailwind CSS",
-        }),
-      ],
-      links: [
-        {
-          rel: "stylesheet",
-          href: appCss,
-        },
-      ],
-    }),
-    component: () => <RootDocument />,
-    wrapInSuspense: true,
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      ...seo({
+        title: "Modern Full-Stack Boilerplate",
+        description:
+          "A feature-rich, type-safe starter for building modern web applications with React, tRPC, Drizzle ORM, and more.",
+        keywords:
+          "React, TypeScript, tRPC, Drizzle ORM, TanStack, Full-Stack, Web Development, Boilerplate, SaaS, Starter, Tailwind CSS",
+      }),
+    ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: appCss,
+      },
+    ],
   }),
-);
+  component: () => <RootDocument />,
+  wrapInSuspense: true,
+});
 
 function RootDocument() {
   const devtoolsPlugins: TanStackDevtoolsReactPlugin[] = [

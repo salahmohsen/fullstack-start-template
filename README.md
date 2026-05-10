@@ -21,7 +21,6 @@ This project provides a solid foundation for building modern web applications us
 - **Forms:** [TanStack Form](https://tanstack.com/form/v1) via `@tanstack/react-form-start`, [Zod](https://zod.dev/) (Validation)
 - **Authentication:** [Better Auth](https://www.better-auth.com/) with `@better-auth/passkey` (Details below)
 - **Email:** [Resend](https://resend.com/), [React Email](https://react.email/) (Transactional emails)
-- **Monitoring:** [Sentry](https://sentry.io/) (Error tracking and performance monitoring)
 - **Testing:** [Vitest](https://vitest.dev/) (Unit/Integration testing)
 - **Tooling & DX:** [Vite Plus](https://viteplus.dev/) toolkit (oxlint + oxfmt via `vp` CLI), [T3 Env](https://github.com/t3-oss/t3-env), [TypeScript](https://www.typescriptlang.org/)
 - **AI:** [@ai-sdk/react](https://sdk.vercel.ai/), [ai](https://sdk.vercel.ai/) (Ready for AI features)
@@ -482,9 +481,6 @@ Powered by [Better Auth](https://www.better-auth.com/) with `@better-auth/passke
       Add it to your `.env` file as `BETTER_AUTH_SECRET`
     - **Email:** Set up a [Resend](https://resend.com/) account for email sending
       - Get your API key and add it as `RESEND_API_KEY`
-    - **Monitoring (optional):** Configure Sentry for error tracking
-      - Get your DSN, organization, and project values from your Sentry dashboard
-      - Set the corresponding environment variables
 
 5.  **Database Setup:**
     Ensure your PostgreSQL database is running and accessible.
@@ -691,7 +687,6 @@ This allows you to test the exact same containerized environment that will be us
 - [x] **i18n Management:** Add Internationalization (translation platform integration).
 - [x] **AI SDK Examples:** Add examples using `@ai-sdk/react`.
 - [x] **Email Templates:** Add more examples/implementations using `react-email`.
-- [x] **Sentry Configuration:** Add details on advanced Sentry setup (sourcemaps, user identification).
 - [x] **Theme Toggle:** Implement UI for switching between light/dark themes (uses `next-themes`).
 - [x] **CI/CD:** Set up a basic CI/CD pipeline (e.g., GitHub Actions for linting, testing, building).
 - [x] **TanStack DB Example:** Add comprehensive example showcasing reactive collections and live queries.
