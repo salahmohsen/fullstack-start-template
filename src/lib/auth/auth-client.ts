@@ -9,20 +9,16 @@ import {
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
-import { resolveAuthBaseUrl } from "@/lib/auth/auth-base-url";
-
 import {
   ac,
   admin as adminRole,
   superadmin as superAdminRole,
   user as userRole,
 } from "./permissions";
+import { env } from "../env.client";
 
 export const authClient = createAuthClient({
-  baseURL: resolveAuthBaseUrl(
-    import.meta.env.VITE_SERVER_URL,
-    globalThis.location?.origin,
-  ),
+  baseURL: env.VITE_SERVER_URL,
   plugins: [
     twoFactorClient({
       twoFactorPage: "/two-factor",
