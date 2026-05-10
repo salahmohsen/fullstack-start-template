@@ -1,10 +1,5 @@
-import { config } from "dotenv";
 import { sql } from "drizzle-orm";
-
 import { db } from "../src/lib/db/index.js";
-
-// Load environment variables
-config();
 
 async function setupVectorExtension() {
   try {
@@ -27,7 +22,9 @@ async function setupVectorExtension() {
     await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector;`);
 
     console.log("✅ Vector extension has been successfully enabled!");
-    console.log("📝 Your database is now ready for vector operations and embeddings.");
+    console.log(
+      "📝 Your database is now ready for vector operations and embeddings.",
+    );
   } catch (error) {
     console.error("❌ Failed to setup vector extension:");
 
@@ -41,7 +38,9 @@ async function setupVectorExtension() {
         console.log("2. Navigate to SQL Editor");
         console.log("3. Run the following query:");
         console.log("   CREATE EXTENSION vector;");
-        console.log("\n🔗 Neon docs: https://neon.tech/docs/extensions/pg_vector");
+        console.log(
+          "\n🔗 Neon docs: https://neon.tech/docs/extensions/pg_vector",
+        );
       } else if (error.message.includes("does not exist")) {
         console.error("Vector extension is not available on this database.");
         console.log("\n📋 For Neon users:");
@@ -49,7 +48,9 @@ async function setupVectorExtension() {
         console.log("2. Navigate to SQL Editor");
         console.log("3. Run the following query:");
         console.log("   CREATE EXTENSION vector;");
-        console.log("\n🔗 Neon docs: https://neon.tech/docs/extensions/pg_vector");
+        console.log(
+          "\n🔗 Neon docs: https://neon.tech/docs/extensions/pg_vector",
+        );
       } else {
         console.error(error.message);
       }
@@ -60,6 +61,7 @@ async function setupVectorExtension() {
 }
 
 // Run the setup
+
 setupVectorExtension().catch((error) => {
   console.error("❌ Unexpected error:", error);
   process.exit(1);

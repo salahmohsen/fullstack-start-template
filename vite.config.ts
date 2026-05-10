@@ -1,16 +1,12 @@
 import babel from "@rolldown/plugin-babel";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact, { reactCompilerPreset } from "@vitejs/plugin-react";
-import dotenv from "dotenv";
 import { nitro } from "nitro/vite";
 import type { PluginOption } from "vite";
 import { postgres } from "vite-plugin-neon-new";
 import { defineConfig, type UserConfig } from "vite-plus";
-
-dotenv.config();
 
 const plugins: PluginOption[] = [
   tanstackStart(),
@@ -27,30 +23,17 @@ const plugins: PluginOption[] = [
     traceDeps: ["react", "react-dom"],
     preset: "vercel",
   }),
+  postgres({
+    referrer: "https://github.com/CarlosZiegler/fullstack-start-template",
+  }),
 ];
 
 export default defineConfig({
+  plugins: plugins,
   server: {
     port: 3000,
-    plugins: [
-      ...plugins,
-      postgres({
-        referrer: "https://github.com/CarlosZiegler/fullstack-start-template",
-      }),
-    ],
   },
-  build: [
-    ...plugins,
-    sentryVitePlugin({
-      org: process.env.VITE_SENTRY_ORG,
-      project: process.env.VITE_SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      //   // Only print logs for uploading source maps in CI
-      //   // Set to `true` to suppress logs
-      //   // silent: !process.env.CI,
-      //   // disable: process.env.NODE_ENV === "development",
-    }),
-  ],
+
   // Git hooks for staged files - https://viteplus.dev/guide/commit-hooks
   staged: {
     "*": "vp fmt --no-error-on-unmatched-pattern",
@@ -159,6 +142,9 @@ export default defineConfig({
       ".vercel",
       ".netlify",
       ".output",
+      ".agents",
+      ".claude",
+      ".nitro",
       "build/",
       "worker-configuration.d.ts",
       "scripts/",
@@ -172,7 +158,7 @@ export default defineConfig({
   run: {
     tasks: {
       build: {
-        command: "SENTRY_LOG_LEVEL=debug vp build",
+        command: "vp build",
         env: ["NODE_ENV", "VITE_*"],
         input: [
           { auto: true },
@@ -198,6 +184,4 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-
-  plugins,
 } as UserConfig);

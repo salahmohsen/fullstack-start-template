@@ -1,15 +1,9 @@
 import { createEnv } from "@t3-oss/env-core";
-import { config } from "dotenv";
 import { z } from "zod";
-
-config();
 
 export const env = createEnv({
   server: {
-    NODE_ENV: z
-      .enum(["production", "development"])
-      .optional()
-      .default("development"),
+    NODE_ENV: z.enum(["production", "development"]).optional().default("development"),
     SERVER_URL: z.url().optional().default("http://localhost:3000"),
     DATABASE_URL: z.url(),
     RESEND_API_KEY: z.string().optional(),

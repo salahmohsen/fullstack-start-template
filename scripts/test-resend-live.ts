@@ -1,9 +1,12 @@
 import WelcomeEmail from "../src/components/emails/welcome-email";
 import { env } from "../src/lib/env.server";
-import { sendEmail } from "../src/lib/resend";
+
+const { sendEmail } = await import("../src/lib/resend");
 
 if (!env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY must be set to run the live Resend smoke test.");
+  throw new Error(
+    "RESEND_API_KEY must be set to run the live Resend smoke test.",
+  );
 }
 
 if (!env.TEST_EMAIL) {
