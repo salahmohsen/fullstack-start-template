@@ -14,7 +14,6 @@ import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as DashboardTanstackDbExampleRouteImport } from './routes/dashboard/tanstack-db-example'
 import { Route as DashboardProtectExamplesRouteImport } from './routes/dashboard/protect-examples'
-import { Route as DotwellKnownOauthAuthorizationServerRouteImport } from './routes/[.]well-known.oauth-authorization-server'
 import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-password'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
@@ -65,12 +64,6 @@ const DashboardProtectExamplesRoute =
     id: '/protect-examples',
     path: '/protect-examples',
     getParentRoute: () => DashboardRouteRoute,
-  } as any)
-const DotwellKnownOauthAuthorizationServerRoute =
-  DotwellKnownOauthAuthorizationServerRouteImport.update({
-    id: '/.well-known/oauth-authorization-server',
-    path: '/.well-known/oauth-authorization-server',
-    getParentRoute: () => rootRouteImport,
   } as any)
 const authResetPasswordRoute = authResetPasswordRouteImport.update({
   id: '/(auth)/reset-password',
@@ -198,7 +191,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/reset-password': typeof authResetPasswordRoute
-  '/.well-known/oauth-authorization-server': typeof DotwellKnownOauthAuthorizationServerRoute
   '/dashboard/protect-examples': typeof DashboardProtectExamplesRoute
   '/dashboard/tanstack-db-example': typeof DashboardTanstackDbExampleRoute
   '/': typeof publicIndexRoute
@@ -228,7 +220,6 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/reset-password': typeof authResetPasswordRoute
-  '/.well-known/oauth-authorization-server': typeof DotwellKnownOauthAuthorizationServerRoute
   '/dashboard/protect-examples': typeof DashboardProtectExamplesRoute
   '/dashboard/tanstack-db-example': typeof DashboardTanstackDbExampleRoute
   '/': typeof publicIndexRoute
@@ -260,7 +251,6 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/(auth)/reset-password': typeof authResetPasswordRoute
-  '/.well-known/oauth-authorization-server': typeof DotwellKnownOauthAuthorizationServerRoute
   '/dashboard/protect-examples': typeof DashboardProtectExamplesRoute
   '/dashboard/tanstack-db-example': typeof DashboardTanstackDbExampleRoute
   '/(public)/': typeof publicIndexRoute
@@ -293,7 +283,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
-    | '/.well-known/oauth-authorization-server'
     | '/dashboard/protect-examples'
     | '/dashboard/tanstack-db-example'
     | '/'
@@ -323,7 +312,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
-    | '/.well-known/oauth-authorization-server'
     | '/dashboard/protect-examples'
     | '/dashboard/tanstack-db-example'
     | '/'
@@ -354,7 +342,6 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/register'
     | '/(auth)/reset-password'
-    | '/.well-known/oauth-authorization-server'
     | '/dashboard/protect-examples'
     | '/dashboard/tanstack-db-example'
     | '/(public)/'
@@ -386,7 +373,6 @@ export interface RootRouteChildren {
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
   authResetPasswordRoute: typeof authResetPasswordRoute
-  DotwellKnownOauthAuthorizationServerRoute: typeof DotwellKnownOauthAuthorizationServerRoute
   publicIndexRoute: typeof publicIndexRoute
   authTwoFactorOtpRoute: typeof authTwoFactorOtpRoute
   ApiAiChatRoute: typeof ApiAiChatRouteWithChildren
@@ -434,13 +420,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/protect-examples'
       preLoaderRoute: typeof DashboardProtectExamplesRouteImport
       parentRoute: typeof DashboardRouteRoute
-    }
-    '/.well-known/oauth-authorization-server': {
-      id: '/.well-known/oauth-authorization-server'
-      path: '/.well-known/oauth-authorization-server'
-      fullPath: '/.well-known/oauth-authorization-server'
-      preLoaderRoute: typeof DotwellKnownOauthAuthorizationServerRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/(auth)/reset-password': {
       id: '/(auth)/reset-password'
@@ -659,8 +638,6 @@ const rootRouteChildren: RootRouteChildren = {
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
   authResetPasswordRoute: authResetPasswordRoute,
-  DotwellKnownOauthAuthorizationServerRoute:
-    DotwellKnownOauthAuthorizationServerRoute,
   publicIndexRoute: publicIndexRoute,
   authTwoFactorOtpRoute: authTwoFactorOtpRoute,
   ApiAiChatRoute: ApiAiChatRouteWithChildren,
