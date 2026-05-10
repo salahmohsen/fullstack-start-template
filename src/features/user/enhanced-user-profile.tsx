@@ -1,11 +1,5 @@
 import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
-import {
-  BadgeCheck,
-  Calendar,
-  Camera,
-  Link as LinkIcon,
-  MapPin,
-} from "lucide-react";
+import { BadgeCheck, Calendar, Camera, Link as LinkIcon, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
@@ -24,11 +18,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
@@ -109,10 +99,7 @@ export function EnhancedUserProfile() {
             <div className="flex items-start gap-6">
               <div className="relative">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage
-                    alt={session?.user?.name}
-                    src={session?.user?.image || undefined}
-                  />
+                  <AvatarImage alt={session?.user?.name} src={session?.user?.image || undefined} />
                   <AvatarFallback className="text-lg">
                     {session?.user?.name
                       ?.split(" ")
@@ -132,22 +119,15 @@ export function EnhancedUserProfile() {
 
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-2xl font-semibold">
-                    {values.name || session?.user?.name}
-                  </h3>
+                  <h3 className="text-2xl font-semibold">{values.name || session?.user?.name}</h3>
                   {session?.user?.emailVerified && (
-                    <Badge
-                      className="border-blue-200 text-blue-600"
-                      variant="outline"
-                    >
+                    <Badge className="border-blue-200 text-blue-600" variant="outline">
                       <BadgeCheck className="mr-1 h-3 w-3" />
                       Verified
                     </Badge>
                   )}
                 </div>
-                <p className="text-muted-foreground">
-                  {values.email || session?.user?.email}
-                </p>
+                <p className="text-muted-foreground">{values.email || session?.user?.email}</p>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   {values.location && (
                     <div className="flex items-center gap-1">
@@ -178,12 +158,7 @@ export function EnhancedUserProfile() {
                     >
                       {isSubmitting ? <Spinner /> : "Save Changes"}
                     </Button>
-                    <Button
-                      onClick={handleCancel}
-                      size="sm"
-                      type="button"
-                      variant="outline"
-                    >
+                    <Button onClick={handleCancel} size="sm" type="button" variant="outline">
                       Cancel
                     </Button>
                   </ButtonGroup>
@@ -222,9 +197,7 @@ export function EnhancedUserProfile() {
                         id={field.name}
                         name={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => field.handleChange(event.target.value)}
                         value={field.state.value}
                       />
                     </field.InputGroupField>
@@ -238,9 +211,7 @@ export function EnhancedUserProfile() {
                         id={field.name}
                         name={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => field.handleChange(event.target.value)}
                         type="email"
                         value={field.state.value}
                       />
@@ -259,9 +230,7 @@ export function EnhancedUserProfile() {
                         id={field.name}
                         name={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => field.handleChange(event.target.value)}
                         placeholder="Tell us a little bit about yourself"
                         value={field.state.value ?? ""}
                       />
@@ -279,9 +248,7 @@ export function EnhancedUserProfile() {
                         id={field.name}
                         name={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => field.handleChange(event.target.value)}
                         value={field.state.value ?? ""}
                       />
                     </field.InputGroupField>
@@ -295,9 +262,7 @@ export function EnhancedUserProfile() {
                         id={field.name}
                         name={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => field.handleChange(event.target.value)}
                         placeholder="https://example.com"
                         type="url"
                         value={field.state.value ?? ""}
@@ -311,9 +276,7 @@ export function EnhancedUserProfile() {
                 <form.AppField name="github">
                   {(field) => (
                     <Field>
-                      <FieldLabel htmlFor={field.name}>
-                        GitHub Username
-                      </FieldLabel>
+                      <FieldLabel htmlFor={field.name}>GitHub Username</FieldLabel>
                       <InputGroup>
                         <InputGroupAddon>
                           <SiGithub size={16} />
@@ -322,9 +285,7 @@ export function EnhancedUserProfile() {
                           id={field.name}
                           name={field.name}
                           onBlur={field.handleBlur}
-                          onChange={(event) =>
-                            field.handleChange(event.target.value)
-                          }
+                          onChange={(event) => field.handleChange(event.target.value)}
                           placeholder="username"
                           value={field.state.value ?? ""}
                         />
@@ -337,9 +298,7 @@ export function EnhancedUserProfile() {
                 <form.AppField name="twitter">
                   {(field) => (
                     <Field>
-                      <FieldLabel htmlFor={field.name}>
-                        Twitter Handle
-                      </FieldLabel>
+                      <FieldLabel htmlFor={field.name}>Twitter Handle</FieldLabel>
                       <InputGroup>
                         <InputGroupAddon>
                           <SiX size={16} />
@@ -348,9 +307,7 @@ export function EnhancedUserProfile() {
                           id={field.name}
                           name={field.name}
                           onBlur={field.handleBlur}
-                          onChange={(event) =>
-                            field.handleChange(event.target.value)
-                          }
+                          onChange={(event) => field.handleChange(event.target.value)}
                           placeholder="@username"
                           value={field.state.value ?? ""}
                         />
@@ -486,12 +443,7 @@ export function EnhancedUserProfile() {
                   {website && (
                     <Button
                       render={(props) => (
-                        <a
-                          {...props}
-                          href={website}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        >
+                        <a {...props} href={website} rel="noopener noreferrer" target="_blank">
                           {props.children}
                         </a>
                       )}

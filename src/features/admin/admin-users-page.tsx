@@ -14,13 +14,13 @@ import {
   UserPlus,
   Users,
   UserX,
-} from 'lucide-react';
-import { useState } from 'react';
+} from "lucide-react";
+import { useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,16 +37,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -54,8 +54,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { UserDetailsDrawer } from '@/features/admin/user-details-drawer';
+} from "@/components/ui/table";
+import { UserDetailsDrawer } from "@/features/admin/user-details-drawer";
 import {
   useBanUser,
   useCreateUser,
@@ -66,8 +66,8 @@ import {
   useSetUserRole,
   useUnbanUser,
   useUsers,
-} from '@/features/user/user-hooks';
-import { authClient } from '@/lib/auth/auth-client';
+} from "@/features/user/user-hooks";
+import { authClient } from "@/lib/auth/auth-client";
 import {
   canBanUsers,
   canCreateUsers,
@@ -77,13 +77,13 @@ import {
   canResetUserPassword,
   canSetUserRoles,
   type UserRole,
-} from '@/lib/auth/permissions';
+} from "@/lib/auth/permissions";
 
 export interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
   emailVerified: boolean;
   banned: boolean | null;
   createdAt: Date;
@@ -125,7 +125,7 @@ function getStatusBadge(user: User) {
 
 function getRoleBadge(role: string) {
   switch (role) {
-    case 'superadmin':
+    case "superadmin":
       return (
         <Badge
           className="border-purple-200 bg-purple-50 font-medium text-purple-700"
@@ -135,7 +135,7 @@ function getRoleBadge(role: string) {
           Super Admin
         </Badge>
       );
-    case 'admin':
+    case "admin":
       return (
         <Badge
           className="border-indigo-200 bg-indigo-50 font-medium text-indigo-700"
@@ -145,7 +145,7 @@ function getRoleBadge(role: string) {
           Admin
         </Badge>
       );
-    case 'user':
+    case "user":
       return (
         <Badge
           className="border-slate-200 bg-slate-50 font-medium text-slate-600"
@@ -170,10 +170,10 @@ function getRoleBadge(role: string) {
 function CreateUserDialog() {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'user' as UserRole | undefined,
+    name: "",
+    email: "",
+    password: "",
+    role: "user" as UserRole | undefined,
   });
 
   const { mutate: createUser, isPending } = useCreateUser();
@@ -183,7 +183,7 @@ function CreateUserDialog() {
     createUser(formData, {
       onSuccess: () => {
         setOpen(false);
-        setFormData({ name: '', email: '', password: '', role: 'user' });
+        setFormData({ name: "", email: "", password: "", role: "user" });
       },
     });
   };
@@ -264,7 +264,7 @@ function CreateUserDialog() {
               Cancel
             </Button>
             <Button disabled={isPending} type="submit">
-              {isPending ? 'Creating...' : 'Create User'}
+              {isPending ? "Creating..." : "Create User"}
             </Button>
           </div>
         </form>
@@ -276,9 +276,9 @@ function CreateUserDialog() {
 export function AdminUsersPage() {
   const { data: session } = authClient.useSession();
   const { data: users, isLoading, refetch } = useUsers();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [roleFilter, setRoleFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -290,7 +290,7 @@ export function AdminUsersPage() {
   const { mutate: revokeUserSessions } = useRevokeUserSessions();
   const { mutate: resetPassword } = useResetUserPassword();
 
-  const currentUserRole = (session?.user?.role as UserRole) || 'user';
+  const currentUserRole = (session?.user?.role as UserRole) || "user";
 
   if (!canManageUsers(currentUserRole)) {
     return (
@@ -311,9 +311,9 @@ export function AdminUsersPage() {
   const normalizedUsers =
     users?.map((user) => ({
       id: user.id,
-      name: user.name || 'Unknown',
+      name: user.name || "Unknown",
       email: user.email,
-      role: user.role || 'user',
+      role: user.role || "user",
       emailVerified: user.emailVerified,
       banned: user.banned,
       createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
@@ -326,12 +326,12 @@ export function AdminUsersPage() {
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus =
-      statusFilter === 'all' ||
-      (statusFilter === 'active' && user.emailVerified && !user.banned) ||
-      (statusFilter === 'pending' && !user.emailVerified && !user.banned) ||
-      (statusFilter === 'banned' && user.banned);
+      statusFilter === "all" ||
+      (statusFilter === "active" && user.emailVerified && !user.banned) ||
+      (statusFilter === "pending" && !user.emailVerified && !user.banned) ||
+      (statusFilter === "banned" && user.banned);
 
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
 
     return matchesSearch && matchesStatus && matchesRole;
   });
@@ -345,43 +345,43 @@ export function AdminUsersPage() {
     const user = normalizedUsers.find((u) => u.id === userId);
 
     switch (action) {
-      case 'view':
+      case "view":
         if (user) {
           setSelectedUser(user);
           setDrawerOpen(true);
         }
         break;
-      case 'ban':
+      case "ban":
         if (canBanUsers(currentUserRole)) {
           banUser({ userId });
         }
         break;
-      case 'unban':
+      case "unban":
         if (canBanUsers(currentUserRole)) {
           unbanUser({ userId });
         }
         break;
-      case 'delete':
+      case "delete":
         if (canDeleteUsers(currentUserRole)) {
           deleteUser({ userId });
         }
         break;
-      case 'setRole':
+      case "setRole":
         if (canSetUserRoles(currentUserRole) && userRole) {
           setUserRole({ userId, role: userRole });
         }
         break;
-      case 'impersonate':
+      case "impersonate":
         if (canImpersonateUsers(currentUserRole)) {
           impersonateUser({ userId });
         }
         break;
-      case 'revokeSession':
+      case "revokeSession":
         if (canManageUsers(currentUserRole)) {
           revokeUserSessions({ userId });
         }
         break;
-      case 'resetPassword':
+      case "resetPassword":
         if (canResetUserPassword(currentUserRole) && password) {
           resetPassword({ userId, password });
         }
@@ -396,7 +396,7 @@ export function AdminUsersPage() {
       .length,
     banned: normalizedUsers.filter((u) => u.banned).length,
     admins: normalizedUsers.filter(
-      (u) => u.role === 'admin' || u.role === 'superadmin',
+      (u) => u.role === "admin" || u.role === "superadmin",
     ).length,
   };
 
@@ -570,9 +570,9 @@ export function AdminUsersPage() {
                           <AvatarImage alt={user.name} src={user.image} />
                           <AvatarFallback>
                             {user.name
-                              .split(' ')
+                              .split(" ")
                               .map((n) => n[0])
-                              .join('')}
+                              .join("")}
                           </AvatarFallback>
                         </Avatar>
                         <div>
@@ -604,14 +604,14 @@ export function AdminUsersPage() {
                           <DropdownMenuGroup>
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                              onClick={() => handleUserAction('view', user.id)}
+                              onClick={() => handleUserAction("view", user.id)}
                             >
                               <Eye className="mr-2 h-4 w-4" />
                               View Details
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleUserAction('revokeSession', user.id)
+                                handleUserAction("revokeSession", user.id)
                               }
                             >
                               <RefreshCw className="mr-2 h-4 w-4" />
@@ -623,7 +623,7 @@ export function AdminUsersPage() {
                           {canSetUserRoles(currentUserRole) && (
                             <DropdownMenuItem
                               onClick={() =>
-                                handleUserAction('setRole', user.id, 'admin')
+                                handleUserAction("setRole", user.id, "admin")
                               }
                             >
                               <ShieldCheck className="mr-2 h-4 w-4" />
@@ -637,7 +637,7 @@ export function AdminUsersPage() {
                             (user.banned ? (
                               <DropdownMenuItem
                                 onClick={() =>
-                                  handleUserAction('unban', user.id)
+                                  handleUserAction("unban", user.id)
                                 }
                               >
                                 <CheckCircle className="mr-2 h-4 w-4" />
@@ -645,7 +645,7 @@ export function AdminUsersPage() {
                               </DropdownMenuItem>
                             ) : (
                               <DropdownMenuItem
-                                onClick={() => handleUserAction('ban', user.id)}
+                                onClick={() => handleUserAction("ban", user.id)}
                               >
                                 <UserX className="mr-2 h-4 w-4" />
                                 Ban User
@@ -655,7 +655,7 @@ export function AdminUsersPage() {
                           {canImpersonateUsers(currentUserRole) && (
                             <DropdownMenuItem
                               onClick={() =>
-                                handleUserAction('impersonate', user.id)
+                                handleUserAction("impersonate", user.id)
                               }
                             >
                               <Eye className="mr-2 h-4 w-4" />
@@ -667,7 +667,7 @@ export function AdminUsersPage() {
                             <DropdownMenuItem
                               className="text-destructive"
                               onClick={() =>
-                                handleUserAction('delete', user.id)
+                                handleUserAction("delete", user.id)
                               }
                             >
                               <Trash2 className="mr-2 h-4 w-4" />

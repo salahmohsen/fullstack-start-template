@@ -3,16 +3,16 @@ export function convertImageToBase64(file: File): Promise<string> {
     const reader = new FileReader();
 
     reader.onload = () => {
-      if (typeof reader.result === 'string') {
+      if (typeof reader.result === "string") {
         resolve(reader.result);
         return;
       }
 
-      reject(new Error('Failed to convert image to base64'));
+      reject(new Error("Failed to convert image to base64"));
     };
 
     reader.onerror = () => {
-      reject(new Error('Failed to read image file'));
+      reject(new Error("Failed to read image file"));
     };
 
     reader.readAsDataURL(file);

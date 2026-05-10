@@ -17,13 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldLabel,
-  FieldSet,
-} from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useSession } from "@/features/auth/auth-hooks";
@@ -53,9 +47,7 @@ export function ChangeUser() {
     onSubmit: async ({ value }) => {
       try {
         await authClient.updateUser({
-          image: value.image
-            ? await convertImageToBase64(value.image)
-            : undefined,
+          image: value.image ? await convertImageToBase64(value.image) : undefined,
           name: value.name ? value.name : undefined,
           fetchOptions: {
             onSuccess: () => {
@@ -94,9 +86,7 @@ export function ChangeUser() {
   };
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger
-        render={<Button className="gap-2" size="sm" variant="secondary" />}
-      >
+      <DialogTrigger render={<Button className="gap-2" size="sm" variant="secondary" />}>
         <Edit size={13} />
         {t("EDIT_USER")}
       </DialogTrigger>
@@ -115,19 +105,14 @@ export function ChangeUser() {
           <FieldSet>
             <form.AppField name="name">
               {(field) => (
-                <field.InputGroupField
-                  label={t("FULL_NAME")}
-                  placeholder={data?.user.name}
-                />
+                <field.InputGroupField label={t("FULL_NAME")} placeholder={data?.user.name} />
               )}
             </form.AppField>
 
             <form.AppField name="image">
               {(field) => (
                 <Field>
-                  <FieldLabel htmlFor={field.name}>
-                    {t("PROFILE_IMAGE")}
-                  </FieldLabel>
+                  <FieldLabel htmlFor={field.name}>{t("PROFILE_IMAGE")}</FieldLabel>
                   <FieldContent>
                     {imagePreview && (
                       <div className="relative h-16 w-16 overflow-hidden rounded-sm">
@@ -148,9 +133,7 @@ export function ChangeUser() {
                         onChange={handleImageChange}
                         type="file"
                       />
-                      {imagePreview && (
-                        <X className="cursor-pointer" onClick={clearImage} />
-                      )}
+                      {imagePreview && <X className="cursor-pointer" onClick={clearImage} />}
                     </div>
                     <FieldError errors={field.state.meta.errors} />
                   </FieldContent>
@@ -160,9 +143,7 @@ export function ChangeUser() {
           </FieldSet>
         </form>
         <DialogFooter>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
               <ButtonGroup>
                 <Button

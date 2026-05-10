@@ -6,20 +6,8 @@ import { z } from "zod";
 import { useAppForm } from "@/components/forms";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldLabel,
-  FieldSet,
-} from "@/components/ui/field";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthHelpers } from "@/features/auth/auth-hooks";
@@ -99,9 +87,7 @@ export const OtpForm = () => {
                   <form.AppField name="otp">
                     {(field) => (
                       <Field>
-                        <FieldLabel htmlFor={field.name}>
-                          {t("ONE_TIME_PASSWORD")}
-                        </FieldLabel>
+                        <FieldLabel htmlFor={field.name}>{t("ONE_TIME_PASSWORD")}</FieldLabel>
                         <FieldContent>
                           <p className="py-2 text-sm text-muted-foreground">
                             {t("CHECK_EMAIL_OTP")} {userEmail}
@@ -111,9 +97,7 @@ export const OtpForm = () => {
                               id={field.name}
                               name={field.name}
                               onBlur={field.handleBlur}
-                              onChange={(event) =>
-                                field.handleChange(event.target.value)
-                              }
+                              onChange={(event) => field.handleChange(event.target.value)}
                               placeholder={t("ENTER_6_DIGIT")}
                               type="text"
                               value={field.state.value}
@@ -125,9 +109,7 @@ export const OtpForm = () => {
                     )}
                   </form.AppField>
                 </FieldSet>
-                <form.Subscribe
-                  selector={(state) => [state.canSubmit, state.isSubmitting]}
-                >
+                <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                   {([canSubmit, isSubmitting]) => (
                     <ButtonGroup>
                       <Button
@@ -151,11 +133,7 @@ export const OtpForm = () => {
             <div
               className={`mt-4 flex items-center gap-2 ${isError ? "text-red-500" : "text-primary"}`}
             >
-              {isError ? (
-                <AlertCircle className="h-4 w-4" />
-              ) : (
-                <CheckCircle2 className="h-4 w-4" />
-              )}
+              {isError ? <AlertCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
               <p className="text-sm">{message}</p>
             </div>
           )}

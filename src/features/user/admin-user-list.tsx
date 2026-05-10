@@ -46,18 +46,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  useBanUser,
-  useDeleteUser,
-  useUnbanUser,
-  useUsers,
-} from "@/features/user/user-hooks";
-import {
-  canBanUsers,
-  canDeleteUsers,
-  canManageUsers,
-  type UserRole,
-} from "@/lib/auth/permissions";
+import { useBanUser, useDeleteUser, useUnbanUser, useUsers } from "@/features/user/user-hooks";
+import { canBanUsers, canDeleteUsers, canManageUsers, type UserRole } from "@/lib/auth/permissions";
 
 import { useSession } from "../auth/auth-hooks";
 
@@ -97,19 +87,13 @@ function getStatusBadge(status: string) {
       );
     case "invited":
       return (
-        <Badge
-          className="border-blue-200 bg-blue-50 font-medium text-blue-700"
-          variant="outline"
-        >
+        <Badge className="border-blue-200 bg-blue-50 font-medium text-blue-700" variant="outline">
           Invited
         </Badge>
       );
     case "suspended":
       return (
-        <Badge
-          className="border-red-200 bg-red-50 font-medium text-red-700"
-          variant="outline"
-        >
+        <Badge className="border-red-200 bg-red-50 font-medium text-red-700" variant="outline">
           Suspended
         </Badge>
       );
@@ -169,10 +153,7 @@ function getRoleBadge(role: string) {
 }
 
 function UserTableSkeleton() {
-  const skeletonItems = Array.from(
-    { length: 5 },
-    (_, i) => `skeleton-${Date.now()}-${i}`,
-  );
+  const skeletonItems = Array.from({ length: 5 }, (_, i) => `skeleton-${Date.now()}-${i}`);
 
   return (
     <div className="space-y-4">
@@ -201,11 +182,7 @@ function normalizeUserData(users: any[]): ExtendedUser[] {
     email: user.email,
     phone: user.phone || "N/A",
     role: user.role || "user",
-    status: user.banned
-      ? "suspended"
-      : user.emailVerified
-        ? "active"
-        : "inactive",
+    status: user.banned ? "suspended" : user.emailVerified ? "active" : "inactive",
     emailVerified: user.emailVerified,
     banned: user.banned,
     createdAt: user.createdAt ? new Date(user.createdAt) : new Date(),
@@ -235,8 +212,7 @@ export function AdminUserList() {
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "all" || user.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || user.status === statusFilter;
     const matchesRole = roleFilter === "all" || user.role === roleFilter;
 
     return matchesSearch && matchesStatus && matchesRole;
@@ -245,10 +221,7 @@ export function AdminUserList() {
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
   const startIndex = (currentPage - 1) * usersPerPage;
-  const paginatedUsers = filteredUsers.slice(
-    startIndex,
-    startIndex + usersPerPage,
-  );
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + usersPerPage);
 
   const handleUserAction = (action: string, userId: string) => {
     switch (action) {
@@ -278,9 +251,7 @@ export function AdminUserList() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">User List</h1>
-          <p className="text-muted-foreground">
-            Manage your users and their roles here.
-          </p>
+          <p className="text-muted-foreground">Manage your users and their roles here.</p>
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline">
@@ -333,10 +304,7 @@ export function AdminUserList() {
               </Select>
 
               {/* Role Filter */}
-              <Select
-                onValueChange={(value) => !!value && setRoleFilter(value)}
-                value={roleFilter}
-              >
+              <Select onValueChange={(value) => !!value && setRoleFilter(value)} value={roleFilter}>
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder="Role" />
                 </SelectTrigger>
@@ -371,10 +339,7 @@ export function AdminUserList() {
             <TableBody>
               {paginatedUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    className="py-8 text-center text-muted-foreground"
-                    colSpan={6}
-                  >
+                  <TableCell className="py-8 text-center text-muted-foreground" colSpan={6}>
                     No users found
                   </TableCell>
                 </TableRow>
@@ -394,9 +359,7 @@ export function AdminUserList() {
                         </Avatar>
                         <div>
                           <div className="font-medium">{user.name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {user.email}
-                          </div>
+                          <div className="text-sm text-muted-foreground">{user.email}</div>
                         </div>
                       </div>
                     </TableCell>
@@ -416,9 +379,7 @@ export function AdminUserList() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger
-                          render={
-                            <Button className="h-8 w-8 p-0" variant="ghost" />
-                          }
+                          render={<Button className="h-8 w-8 p-0" variant="ghost" />}
                         >
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
@@ -426,17 +387,11 @@ export function AdminUserList() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuGroup>
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              onClick={() => handleUserAction("view", user.id)}
-                            >
+                            <DropdownMenuItem onClick={() => handleUserAction("view", user.id)}>
                               <Eye className="mr-2 h-4 w-4" />
                               View Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handleUserAction("activity", user.id)
-                              }
-                            >
+                            <DropdownMenuItem onClick={() => handleUserAction("activity", user.id)}>
                               <RefreshCw className="mr-2 h-4 w-4" />
                               View Activity
                             </DropdownMenuItem>
@@ -444,19 +399,11 @@ export function AdminUserList() {
                           <DropdownMenuSeparator />
                           {canManageUsers(currentUserRole) && (
                             <>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleUserAction("email", user.id)
-                                }
-                              >
+                              <DropdownMenuItem onClick={() => handleUserAction("email", user.id)}>
                                 <Mail className="mr-2 h-4 w-4" />
                                 Send Email
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleUserAction("reset", user.id)
-                                }
-                              >
+                              <DropdownMenuItem onClick={() => handleUserAction("reset", user.id)}>
                                 <RefreshCw className="mr-2 h-4 w-4" />
                                 Reset Password
                               </DropdownMenuItem>
@@ -465,18 +412,12 @@ export function AdminUserList() {
                           )}
                           {canBanUsers(currentUserRole) &&
                             (user.banned ? (
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleUserAction("unban", user.id)
-                                }
-                              >
+                              <DropdownMenuItem onClick={() => handleUserAction("unban", user.id)}>
                                 <ShieldCheck className="mr-2 h-4 w-4" />
                                 Unban User
                               </DropdownMenuItem>
                             ) : (
-                              <DropdownMenuItem
-                                onClick={() => handleUserAction("ban", user.id)}
-                              >
+                              <DropdownMenuItem onClick={() => handleUserAction("ban", user.id)}>
                                 <UserX className="mr-2 h-4 w-4" />
                                 Ban User
                               </DropdownMenuItem>
@@ -484,9 +425,7 @@ export function AdminUserList() {
                           {canDeleteUsers(currentUserRole) && (
                             <DropdownMenuItem
                               className="text-destructive"
-                              onClick={() =>
-                                handleUserAction("delete", user.id)
-                              }
+                              onClick={() => handleUserAction("delete", user.id)}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete User
@@ -553,9 +492,7 @@ export function AdminUserList() {
                 <Button
                   className="h-8 w-8 p-0"
                   disabled={currentPage === totalPages}
-                  onClick={() =>
-                    setCurrentPage(Math.min(totalPages, currentPage + 1))
-                  }
+                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   variant="outline"
                 >
                   <span className="sr-only">Go to next page</span>→
@@ -575,11 +512,7 @@ export function AdminUserList() {
       </Card>
 
       {/* Overlay Loader */}
-      <ComponentOverlayLoader
-        isLoading={isLoading}
-        message="Loading users..."
-        size="md"
-      />
+      <ComponentOverlayLoader isLoading={isLoading} message="Loading users..." size="md" />
     </div>
   );
 }

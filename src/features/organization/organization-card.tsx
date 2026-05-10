@@ -57,9 +57,7 @@ import type { AuthClient } from "@/lib/auth/auth-client";
 import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
 
-type ActiveOrganization = Awaited<
-  ReturnType<typeof authClient.organization.getFullOrganization>
->;
+type ActiveOrganization = Awaited<ReturnType<typeof authClient.organization.getFullOrganization>>;
 
 export function OrganizationCard(props: {
   session: AuthClient["$Infer"]["Session"] | null;
@@ -100,13 +98,10 @@ export function OrganizationCard(props: {
           <DropdownMenu>
             <DropdownMenuTrigger
               nativeButton={false}
-              render={
-                <div className="flex cursor-pointer items-center gap-1" />
-              }
+              render={<div className="flex cursor-pointer items-center gap-1" />}
             >
               <p className="text-sm">
-                <span className="font-bold" />{" "}
-                {optimisticOrg?.name || t("PERSONAL")}
+                <span className="font-bold" /> {optimisticOrg?.name || t("PERSONAL")}
               </p>
               <ChevronDownIcon />
             </DropdownMenuTrigger>
@@ -165,24 +160,14 @@ export function OrganizationCard(props: {
       <CardContent>
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="flex flex-grow flex-col gap-2">
-            <p className="border-b-2 border-b-foreground/10 font-medium">
-              {t("MEMBERS")}
-            </p>
+            <p className="border-b-2 border-b-foreground/10 font-medium">{t("MEMBERS")}</p>
             <div className="flex flex-col gap-2">
               {optimisticOrg?.members.map((member) => (
-                <div
-                  className="flex items-center justify-between"
-                  key={member.id}
-                >
+                <div className="flex items-center justify-between" key={member.id}>
                   <div className="flex items-center gap-2">
                     <Avatar className="h-9 w-9 sm:flex">
-                      <AvatarImage
-                        className="object-cover"
-                        src={member.user.image || ""}
-                      />
-                      <AvatarFallback>
-                        {member.user.name?.charAt(0)}
-                      </AvatarFallback>
+                      <AvatarImage className="object-cover" src={member.user.image || ""} />
+                      <AvatarFallback>{member.user.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="text-sm">{member.user.name}</p>
@@ -196,8 +181,7 @@ export function OrganizationCard(props: {
                     </div>
                   </div>
                   {member.role !== "owner" &&
-                    (currentMember?.role === "owner" ||
-                      currentMember?.role === "admin") && (
+                    (currentMember?.role === "owner" || currentMember?.role === "admin") && (
                       <Button
                         onClick={() => {
                           removeMember.mutate({
@@ -207,9 +191,7 @@ export function OrganizationCard(props: {
                         size="sm"
                         variant="destructive"
                       >
-                        {currentMember?.id === member.id
-                          ? t("LEAVE")
-                          : t("REMOVE")}
+                        {currentMember?.id === member.id ? t("LEAVE") : t("REMOVE")}
                       </Button>
                     )}
                 </div>
@@ -219,15 +201,11 @@ export function OrganizationCard(props: {
                   <div className="flex items-center gap-2">
                     <Avatar>
                       <AvatarImage src={session?.user.image || ""} />
-                      <AvatarFallback>
-                        {session?.user.name?.charAt(0)}
-                      </AvatarFallback>
+                      <AvatarFallback>{session?.user.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="text-sm">{session?.user.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {t("OWNER")}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t("OWNER")}</p>
                     </div>
                   </div>
                 </div>
@@ -235,9 +213,7 @@ export function OrganizationCard(props: {
             </div>
           </div>
           <div className="flex flex-grow flex-col gap-2">
-            <p className="border-b-2 border-b-foreground/10 font-medium">
-              {t("INVITES")}
-            </p>
+            <p className="border-b-2 border-b-foreground/10 font-medium">{t("INVITES")}</p>
             <div className="flex flex-col gap-2">
               <AnimatePresence>
                 {optimisticOrg?.invitations
@@ -273,21 +249,11 @@ export function OrganizationCard(props: {
                               },
                               {
                                 onSuccess: () => {
-                                  toast.message(
-                                    "Invitation revoked successfully",
-                                  );
-                                  setIsRevoking(
-                                    isRevoking.filter(
-                                      (id) => id !== invitation.id,
-                                    ),
-                                  );
+                                  toast.message("Invitation revoked successfully");
+                                  setIsRevoking(isRevoking.filter((id) => id !== invitation.id));
                                 },
                                 onError: () => {
-                                  setIsRevoking(
-                                    isRevoking.filter(
-                                      (id) => id !== invitation.id,
-                                    ),
-                                  );
+                                  setIsRevoking(isRevoking.filter((id) => id !== invitation.id));
                                 },
                               },
                             );
@@ -295,11 +261,7 @@ export function OrganizationCard(props: {
                           size="sm"
                           variant="destructive"
                         >
-                          {isRevoking.includes(invitation.id) ? (
-                            <Spinner />
-                          ) : (
-                            t("REVOKE")
-                          )}
+                          {isRevoking.includes(invitation.id) ? <Spinner /> : t("REVOKE")}
                         </Button>
                         <div>
                           <CopyButton
@@ -321,9 +283,7 @@ export function OrganizationCard(props: {
                 </motion.p>
               )}
               {!optimisticOrg?.id && (
-                <Label className="text-xs text-muted-foreground">
-                  {t("CANT_INVITE_PERSONAL")}
-                </Label>
+                <Label className="text-xs text-muted-foreground">{t("CANT_INVITE_PERSONAL")}</Label>
               )}
             </div>
           </div>
@@ -343,10 +303,7 @@ const createOrganizationSchema = z.object({
   slug: z
     .string()
     .min(2, "Slug must be at least 2 characters")
-    .regex(
-      /^[a-z0-9-]+$/,
-      "Slug can only contain lowercase letters, numbers, and hyphens",
-    ),
+    .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   logo: z.instanceof(File).or(z.undefined()),
 });
 
@@ -425,9 +382,7 @@ function CreateOrganizationDialog() {
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger
-        render={<Button className="w-full gap-2" size="sm" variant="default" />}
-      >
+      <DialogTrigger render={<Button className="w-full gap-2" size="sm" variant="default" />}>
         <PlusIcon />
         <p>{t("NEW_ORGANIZATION")}</p>
       </DialogTrigger>
@@ -527,25 +482,17 @@ function CreateOrganizationDialog() {
           </FieldSet>
         </form>
         <DialogFooter>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
               <ButtonGroup>
                 <Button
-                  disabled={
-                    !canSubmit || isSubmitting || createOrganization.isPending
-                  }
+                  disabled={!canSubmit || isSubmitting || createOrganization.isPending}
                   onClick={() => {
                     void form.handleSubmit();
                   }}
                   type="button"
                 >
-                  {createOrganization.isPending || isSubmitting ? (
-                    <Spinner />
-                  ) : (
-                    t("CREATE")
-                  )}
+                  {createOrganization.isPending || isSubmitting ? <Spinner /> : t("CREATE")}
                 </Button>
               </ButtonGroup>
             )}
@@ -597,11 +544,7 @@ function InviteMemberDialog() {
   });
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger
-        render={
-          <Button className="w-full gap-2" size="sm" variant="secondary" />
-        }
-      >
+      <DialogTrigger render={<Button className="w-full gap-2" size="sm" variant="secondary" />}>
         <MailPlus size={16} />
         <p>{t("INVITE_MEMBER")}</p>
       </DialogTrigger>
@@ -626,9 +569,7 @@ function InviteMemberDialog() {
                       id={field.name}
                       name={field.name}
                       onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
+                      onChange={(event) => field.handleChange(event.target.value)}
                       placeholder={t("EMAIL")}
                       type="email"
                       value={field.state.value}
@@ -643,9 +584,7 @@ function InviteMemberDialog() {
                     <FieldLabel htmlFor={field.name}>{t("ROLE")}</FieldLabel>
                     <FieldContent>
                       <Select
-                        onValueChange={(value) =>
-                          field.handleChange(value as "admin" | "member")
-                        }
+                        onValueChange={(value) => field.handleChange(value as "admin" | "member")}
                         value={field.state.value}
                       >
                         <SelectTrigger id={field.name}>
@@ -665,25 +604,17 @@ function InviteMemberDialog() {
           </FieldSet>
         </form>
         <DialogFooter>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
               <ButtonGroup>
                 <Button
-                  disabled={
-                    !canSubmit || isSubmitting || inviteMember.isPending
-                  }
+                  disabled={!canSubmit || isSubmitting || inviteMember.isPending}
                   onClick={() => {
                     void form.handleSubmit();
                   }}
                   type="button"
                 >
-                  {inviteMember.isPending || isSubmitting ? (
-                    <Spinner />
-                  ) : (
-                    t("INVITE")
-                  )}
+                  {inviteMember.isPending || isSubmitting ? <Spinner /> : t("INVITE")}
                 </Button>
               </ButtonGroup>
             )}

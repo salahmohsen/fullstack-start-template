@@ -1,12 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import {
-  Laptop,
-  LogOut,
-  PhoneIcon,
-  QrCode,
-  ShieldCheck,
-  ShieldOff,
-} from "lucide-react";
+import { Laptop, LogOut, PhoneIcon, QrCode, ShieldCheck, ShieldOff } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode } from "react-qr-code";
@@ -21,13 +14,7 @@ import { AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -202,9 +189,7 @@ export default function UserCard(props: {
     );
   };
 
-  const handleRevokeSession = async (
-    item: AuthClient["$Infer"]["Session"]["session"],
-  ) => {
+  const handleRevokeSession = async (item: AuthClient["$Infer"]["Session"]["session"]) => {
     setIsTerminating(item.id);
     const res = await revokeSession.mutateAsync({
       token: item.token,
@@ -243,9 +228,7 @@ export default function UserCard(props: {
               <AvatarFallback>{session?.user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="grid gap-1">
-              <p className="text-sm leading-none font-medium">
-                {session?.user.name}
-              </p>
+              <p className="text-sm leading-none font-medium">{session?.user.name}</p>
               <p className="text-sm">{session?.user.email}</p>
             </div>
           </div>
@@ -265,11 +248,7 @@ export default function UserCard(props: {
                 size="sm"
                 variant="secondary"
               >
-                {sendVerificationEmail.isPending ? (
-                  <Spinner />
-                ) : (
-                  t("RESEND_VERIFICATION")
-                )}
+                {sendVerificationEmail.isPending ? <Spinner /> : t("RESEND_VERIFICATION")}
               </Button>
             </div>
           </div>
@@ -282,8 +261,7 @@ export default function UserCard(props: {
             .map((item) => (
               <div key={item.id}>
                 <div className="flex items-center gap-2 text-sm font-medium text-black dark:text-white">
-                  {new UAParser(item.userAgent || "").getDevice().type ===
-                  "mobile" ? (
+                  {new UAParser(item.userAgent || "").getDevice().type === "mobile" ? (
                     <PhoneIcon />
                   ) : (
                     <Laptop size={16} />
@@ -320,13 +298,9 @@ export default function UserCard(props: {
             <div className="flex gap-2">
               {!!session?.user.twoFactorEnabled && (
                 <Dialog>
-                  <DialogTrigger
-                    render={<Button className="gap-2" variant="outline" />}
-                  >
+                  <DialogTrigger render={<Button className="gap-2" variant="outline" />}>
                     <QrCode size={16} />
-                    <span className="text-xs md:text-sm">
-                      {t("SCAN_QR_CODE")}
-                    </span>
+                    <span className="text-xs md:text-sm">{t("SCAN_QR_CODE")}</span>
                   </DialogTrigger>
                   <DialogContent className="w-11/12 sm:max-w-[425px]">
                     <DialogHeader>
@@ -340,9 +314,7 @@ export default function UserCard(props: {
                           <QRCode value={twoFactorVerifyURI} />
                         </div>
                         <div className="flex items-center justify-center gap-2">
-                          <p className="text-sm text-muted-foreground">
-                            {t("COPY_URI")}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{t("COPY_URI")}</p>
                           <CopyButton textToCopy={twoFactorVerifyURI} />
                         </div>
                       </>
@@ -367,19 +339,12 @@ export default function UserCard(props: {
                           </FieldGroup>
                         </FieldSet>
                         <qrCodeForm.Subscribe
-                          selector={(state) => [
-                            state.canSubmit,
-                            state.isSubmitting,
-                          ]}
+                          selector={(state) => [state.canSubmit, state.isSubmitting]}
                         >
                           {([canSubmit, isSubmitting]) => (
                             <ButtonGroup>
                               <Button
-                                disabled={
-                                  !canSubmit ||
-                                  isSubmitting ||
-                                  getTotpUri.isPending
-                                }
+                                disabled={!canSubmit || isSubmitting || getTotpUri.isPending}
                                 type="submit"
                               >
                                 {isSubmitting || getTotpUri.isPending ? (
@@ -401,11 +366,7 @@ export default function UserCard(props: {
                   render={
                     <Button
                       className="gap-2"
-                      variant={
-                        session?.user.twoFactorEnabled
-                          ? "destructive"
-                          : "outline"
-                      }
+                      variant={session?.user.twoFactorEnabled ? "destructive" : "outline"}
                     />
                   }
                 >
@@ -415,17 +376,13 @@ export default function UserCard(props: {
                     <ShieldCheck size={16} />
                   )}
                   <span className="text-xs md:text-sm">
-                    {session?.user.twoFactorEnabled
-                      ? t("DISABLE_2FA")
-                      : t("ENABLE_2FA")}
+                    {session?.user.twoFactorEnabled ? t("DISABLE_2FA") : t("ENABLE_2FA")}
                   </span>
                 </DialogTrigger>
                 <DialogContent className="w-11/12 sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>
-                      {session?.user.twoFactorEnabled
-                        ? t("DISABLE_2FA")
-                        : t("ENABLE_2FA")}
+                      {session?.user.twoFactorEnabled ? t("DISABLE_2FA") : t("ENABLE_2FA")}
                     </DialogTitle>
                     <DialogDescription>
                       {session?.user.twoFactorEnabled
@@ -448,9 +405,7 @@ export default function UserCard(props: {
                             <div className="flex items-center justify-center">
                               <QRCode value={twoFactorVerifyURI} />
                             </div>
-                            <FieldDescription>
-                              {t("SCAN_QR_DESC")}
-                            </FieldDescription>
+                            <FieldDescription>{t("SCAN_QR_DESC")}</FieldDescription>
                             <twoFactorForm.AppField name="otp">
                               {(field) => (
                                 <field.InputGroupField
@@ -474,10 +429,7 @@ export default function UserCard(props: {
                     </FieldSet>
                     <DialogFooter>
                       <twoFactorForm.Subscribe
-                        selector={(state) => [
-                          state.canSubmit,
-                          state.isSubmitting,
-                        ]}
+                        selector={(state) => [state.canSubmit, state.isSubmitting]}
                       >
                         {([canSubmit, isSubmitting]) => (
                           <ButtonGroup>

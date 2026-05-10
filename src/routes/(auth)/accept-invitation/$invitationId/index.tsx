@@ -16,9 +16,7 @@ import { InvitationError } from "@/features/organization/invitation-error";
 import { authClient } from "@/lib/auth/auth-client";
 import { useTranslation } from "@/lib/intl/react";
 
-export const Route = createFileRoute(
-  "/(auth)/accept-invitation/$invitationId/",
-)({
+export const Route = createFileRoute("/(auth)/accept-invitation/$invitationId/")({
   component: RouteComponent,
 });
 
@@ -26,9 +24,9 @@ function RouteComponent() {
   const { t } = useTranslation();
   const params = Route.useParams();
   const router = useRouter();
-  const [invitationStatus, setInvitationStatus] = useState<
-    "pending" | "accepted" | "rejected"
-  >("pending");
+  const [invitationStatus, setInvitationStatus] = useState<"pending" | "accepted" | "rejected">(
+    "pending",
+  );
 
   const handleAccept = async () => {
     await authClient.organization
@@ -107,8 +105,7 @@ function RouteComponent() {
                   <strong>{invitation?.organizationName}</strong>.
                 </p>
                 <p>
-                  {t("INVITATION_SENT_TO")} <strong>{invitation?.email}</strong>
-                  .
+                  {t("INVITATION_SENT_TO")} <strong>{invitation?.email}</strong>.
                 </p>
               </div>
             )}
@@ -128,9 +125,7 @@ function RouteComponent() {
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                   <XIcon className="h-8 w-8 text-red-600" />
                 </div>
-                <h2 className="text-center text-2xl font-bold">
-                  {t("INVITATION_DECLINED")}
-                </h2>
+                <h2 className="text-center text-2xl font-bold">{t("INVITATION_DECLINED")}</h2>
                 <p className="text-center">
                   {t("DECLINED_MESSAGE")} {invitation?.organizationName}.
                 </p>

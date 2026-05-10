@@ -27,7 +27,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -123,7 +127,9 @@ export default function AdminDashboard() {
     } catch (error: any) {
       const errorMessage = error?.message || t("FAILED_TO_CREATE_USER");
       if (errorMessage.includes("403") || errorMessage.includes("forbidden")) {
-        toast.error("Access denied. You don't have permission to create users.");
+        toast.error(
+          "Access denied. You don't have permission to create users.",
+        );
       } else {
         toast.error(errorMessage);
       }
@@ -148,7 +154,9 @@ export default function AdminDashboard() {
     } catch (error: any) {
       const errorMessage = error?.message || t("FAILED_TO_DELETE_USER");
       if (errorMessage.includes("403") || errorMessage.includes("forbidden")) {
-        toast.error("Access denied. You don't have permission to delete users.");
+        toast.error(
+          "Access denied. You don't have permission to delete users.",
+        );
       } else {
         toast.error(errorMessage);
       }
@@ -170,7 +178,9 @@ export default function AdminDashboard() {
     } catch (error: any) {
       const errorMessage = error?.message || t("FAILED_TO_REVOKE_SESSIONS");
       if (errorMessage.includes("403") || errorMessage.includes("forbidden")) {
-        toast.error("Access denied. You don't have permission to revoke user sessions.");
+        toast.error(
+          "Access denied. You don't have permission to revoke user sessions.",
+        );
       } else {
         toast.error(errorMessage);
       }
@@ -193,7 +203,9 @@ export default function AdminDashboard() {
     } catch (error: any) {
       const errorMessage = error?.message || t("FAILED_TO_IMPERSONATE_USER");
       if (errorMessage.includes("403") || errorMessage.includes("forbidden")) {
-        toast.error("Access denied. You don't have permission to impersonate users.");
+        toast.error(
+          "Access denied. You don't have permission to impersonate users.",
+        );
       } else {
         toast.error(errorMessage);
       }
@@ -256,7 +268,9 @@ export default function AdminDashboard() {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, email: e.target.value })
+                    }
                     required
                     type="email"
                     value={newUser.email}
@@ -266,7 +280,9 @@ export default function AdminDashboard() {
                   <Label htmlFor="password">{t("PASSWORD")}</Label>
                   <Input
                     id="password"
-                    onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, password: e.target.value })
+                    }
                     required
                     type="password"
                     value={newUser.password}
@@ -276,7 +292,9 @@ export default function AdminDashboard() {
                   <Label htmlFor="name">{t("NAME")}</Label>
                   <Input
                     id="name"
-                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, name: e.target.value })
+                    }
                     required
                     value={newUser.name}
                   />
@@ -284,8 +302,12 @@ export default function AdminDashboard() {
                 <div>
                   <Label htmlFor="role">{t("ROLE")}</Label>
                   <Select
-                    onValueChange={(value: "admin" | "user") =>
-                      setNewUser({ ...newUser, role: value as "user" })
+                    onValueChange={(value) =>
+                      !!value &&
+                      setNewUser({
+                        ...newUser,
+                        role: value as "user",
+                      })
                     }
                     value={newUser.role}
                   >
@@ -298,7 +320,11 @@ export default function AdminDashboard() {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="w-full" disabled={isLoading === "create"} type="submit">
+                <Button
+                  className="w-full"
+                  disabled={isLoading === "create"}
+                  type="submit"
+                >
                   {isLoading === "create" ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -321,7 +347,9 @@ export default function AdminDashboard() {
                   <Label htmlFor="reason">{t("REASON")}</Label>
                   <Input
                     id="reason"
-                    onChange={(e) => setBanForm({ ...banForm, reason: e.target.value })}
+                    onChange={(e) =>
+                      setBanForm({ ...banForm, reason: e.target.value })
+                    }
                     required
                     value={banForm.reason}
                   />
@@ -350,9 +378,10 @@ export default function AdminDashboard() {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
-                        initialFocus
                         mode="single"
-                        onSelect={(date) => setBanForm({ ...banForm, expirationDate: date })}
+                        onSelect={(date) =>
+                          setBanForm({ ...banForm, expirationDate: date })
+                        }
                         selected={banForm.expirationDate}
                       />
                     </PopoverContent>
@@ -381,7 +410,8 @@ export default function AdminDashboard() {
             <Alert className="mb-6" variant="destructive">
               <ShieldX className="h-4 w-4" />
               <AlertDescription>
-                {usersError?.message?.includes("403") || usersError?.message?.includes("forbidden")
+                {usersError?.message?.includes("403") ||
+                usersError?.message?.includes("forbidden")
                   ? "Access denied. You don't have admin privileges to view this section."
                   : usersError?.message ||
                     "Failed to load admin dashboard. Please try again later."}
@@ -486,7 +516,10 @@ export default function AdminDashboard() {
                                 },
                                 {
                                   onError(context) {
-                                    toast.error(context.error.message || t("FAILED_TO_UNBAN_USER"));
+                                    toast.error(
+                                      context.error.message ||
+                                        t("FAILED_TO_UNBAN_USER"),
+                                    );
                                     setIsLoading(undefined);
                                   },
                                   onSuccess() {

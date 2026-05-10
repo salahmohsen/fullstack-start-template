@@ -1,3 +1,4 @@
+import { Form } from "@base-ui/react";
 import { Fingerprint, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,7 +20,6 @@ import {
 import { FieldSet } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/auth-client";
-import { Form } from "@base-ui/react";
 
 const addPasskeySchema = z.object({
   name: z.string().min(1, "Passkey name is required"),
@@ -46,9 +46,7 @@ export function AddPasskey() {
         } else {
           setIsOpen(false);
           form.reset();
-          toast.success(
-            "Passkey added successfully. You can now use it to login.",
-          );
+          toast.success("Passkey added successfully. You can now use it to login.");
         }
       } catch {
         toast.error("An error occurred while adding passkey");
@@ -58,11 +56,7 @@ export function AddPasskey() {
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger
-        render={
-          <Button className="gap-2 text-xs md:text-sm" variant="outline" />
-        }
-      >
+      <DialogTrigger render={<Button className="gap-2 text-xs md:text-sm" variant="outline" />}>
         <Plus size={15} />
         {t("ADD_NEW_PASSKEY")}
       </DialogTrigger>
@@ -85,9 +79,7 @@ export function AddPasskey() {
           </FieldSet>
         </Form>
         <DialogFooter>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
               <ButtonGroup>
                 <Button

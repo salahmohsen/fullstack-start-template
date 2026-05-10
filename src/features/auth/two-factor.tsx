@@ -17,6 +17,7 @@ import {
 import { FieldSet } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "@/lib/intl/react";
+
 import { useAuthHelpers } from "./auth-hooks";
 
 const twoFactorSchema = z.object({
@@ -66,9 +67,7 @@ export const TwoFactorForm = () => {
           {success ? (
             <div className="flex flex-col items-center justify-center space-y-2">
               <CheckCircle2 className="h-12 w-12 text-green-500" />
-              <p className="text-lg font-semibold">
-                {t("VERIFICATION_SUCCESSFUL")}
-              </p>
+              <p className="text-lg font-semibold">{t("VERIFICATION_SUCCESSFUL")}</p>
             </div>
           ) : (
             <form
@@ -88,9 +87,7 @@ export const TwoFactorForm = () => {
                   )}
                 </form.AppField>
               </FieldSet>
-              <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting]}
-              >
+              <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                 {([canSubmit, isSubmitting]) => (
                   <ButtonGroup>
                     <Button
@@ -98,11 +95,7 @@ export const TwoFactorForm = () => {
                       disabled={!canSubmit || isSubmitting}
                       type="submit"
                     >
-                      {isSubmitting || verifyTwoFactor.isPending ? (
-                        <Spinner />
-                      ) : (
-                        t("VERIFY")
-                      )}
+                      {isSubmitting || verifyTwoFactor.isPending ? <Spinner /> : t("VERIFY")}
                     </Button>
                   </ButtonGroup>
                 )}

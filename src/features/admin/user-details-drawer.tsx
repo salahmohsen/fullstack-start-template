@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import {
   Calendar,
   Check,
@@ -8,61 +8,62 @@ import {
   UserIcon,
   UserCheck,
   X,
-} from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'sonner';
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
   useBanUser,
   useResetUserPassword,
   useRevokeUserSessions,
   useSetUserRole,
   useUnbanUser,
-} from '@/features/user/user-hooks';
+} from "@/features/user/user-hooks";
 import {
   canBanUsers,
   canImpersonateUsers,
   canSetUserRoles,
   getAssignableRoles,
   type UserRole,
-} from '@/lib/auth/permissions';
-import type { User } from './admin-users-page';
+} from "@/lib/auth/permissions";
+
+import type { User } from "./admin-users-page";
 
 interface UserDetailsDrawerProps {
   user: User | null;
@@ -73,7 +74,7 @@ interface UserDetailsDrawerProps {
 
 function getRoleBadge(role: string) {
   switch (role) {
-    case 'superadmin':
+    case "superadmin":
       return (
         <Badge
           className="border-purple-200 bg-purple-50 font-medium text-purple-700"
@@ -83,7 +84,7 @@ function getRoleBadge(role: string) {
           Super Admin
         </Badge>
       );
-    case 'admin':
+    case "admin":
       return (
         <Badge
           className="border-indigo-200 bg-indigo-50 font-medium text-indigo-700"
@@ -93,7 +94,7 @@ function getRoleBadge(role: string) {
           Admin
         </Badge>
       );
-    case 'user':
+    case "user":
       return (
         <Badge
           className="border-slate-200 bg-slate-50 font-medium text-slate-600"
@@ -159,8 +160,8 @@ function ChangeRoleDialog({
   onOpenChange: (open: boolean) => void;
   currentUserRole: UserRole;
 }) {
-  const [selectedRole, setSelectedRole] = useState<string>(
-    user?.role || 'user',
+  const [selectedRole, setSelectedRole] = useState<UserRole>(
+    user?.role || "user",
   );
   const { mutate: setUserRole, isPending } = useSetUserRole();
 
@@ -173,11 +174,11 @@ function ChangeRoleDialog({
       { userId: user.id, role: selectedRole },
       {
         onSuccess: () => {
-          toast.success('User role updated successfully');
+          toast.success("User role updated successfully");
           onOpenChange(false);
         },
         onError: (error) => {
-          toast.error(error.message || 'Failed to update user role');
+          toast.error(error.message || "Failed to update user role");
         },
       },
     );
@@ -185,12 +186,12 @@ function ChangeRoleDialog({
 
   const getRoleDisplayName = (role: UserRole) => {
     switch (role) {
-      case 'user':
-        return 'User';
-      case 'admin':
-        return 'Admin';
-      case 'superadmin':
-        return 'Super Admin';
+      case "user":
+        return "User";
+      case "admin":
+        return "Admin";
+      case "superadmin":
+        return "Super Admin";
       default:
         return role;
     }
@@ -198,14 +199,14 @@ function ChangeRoleDialog({
 
   const getRoleDescription = (role: UserRole) => {
     switch (role) {
-      case 'user':
-        return 'Basic access with limited permissions';
-      case 'admin':
-        return 'Can manage users and organization settings';
-      case 'superadmin':
-        return 'Full system access including user deletion and impersonation';
+      case "user":
+        return "Basic access with limited permissions";
+      case "admin":
+        return "Can manage users and organization settings";
+      case "superadmin":
+        return "Full system access including user deletion and impersonation";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -250,9 +251,9 @@ function ChangeRoleDialog({
           {selectedRole && selectedRole !== user.role && (
             <div className="rounded-lg bg-muted p-3">
               <p className="mb-1 text-sm font-medium">
-                {selectedRole === 'superadmin' && 'Granting Super Admin access'}
-                {selectedRole === 'admin' && 'Granting Admin access'}
-                {selectedRole === 'user' && 'Removing admin privileges'}
+                {selectedRole === "superadmin" && "Granting Super Admin access"}
+                {selectedRole === "admin" && "Granting Admin access"}
+                {selectedRole === "user" && "Removing admin privileges"}
               </p>
               <p className="text-xs text-muted-foreground">
                 {getRoleDescription(selectedRole as UserRole)}
@@ -268,7 +269,7 @@ function ChangeRoleDialog({
               disabled={isPending || selectedRole === user.role}
               onClick={handleRoleChange}
             >
-              {isPending ? 'Updating...' : 'Update Role'}
+              {isPending ? "Updating..." : "Update Role"}
             </Button>
           </div>
         </div>
@@ -286,18 +287,18 @@ function ResetPasswordDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const { mutate: resetPassword, isPending } = useResetUserPassword();
 
   const handleResetPassword = () => {
     if (!user) return;
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error("Passwords do not match");
       return;
     }
     if (password.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
@@ -305,13 +306,13 @@ function ResetPasswordDialog({
       { userId: user.id, password },
       {
         onSuccess: () => {
-          toast.success('Password reset successfully');
-          setPassword('');
-          setConfirmPassword('');
+          toast.success("Password reset successfully");
+          setPassword("");
+          setConfirmPassword("");
           onOpenChange(false);
         },
         onError: (error) => {
-          toast.error(error.message || 'Failed to reset password');
+          toast.error(error.message || "Failed to reset password");
         },
       },
     );
@@ -357,7 +358,7 @@ function ResetPasswordDialog({
               disabled={isPending || !password || password !== confirmPassword}
               onClick={handleResetPassword}
             >
-              {isPending ? 'Resetting...' : 'Reset Password'}
+              {isPending ? "Resetting..." : "Reset Password"}
             </Button>
           </div>
         </div>
@@ -375,7 +376,7 @@ function BanUserDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [reason, setReason] = useState('');
+  const [reason, setReason] = useState("");
   const { mutate: banUser, isPending } = useBanUser();
 
   const handleBanUser = () => {
@@ -385,12 +386,12 @@ function BanUserDialog({
       { userId: user.id },
       {
         onSuccess: () => {
-          toast.success('User banned successfully');
-          setReason('');
+          toast.success("User banned successfully");
+          setReason("");
           onOpenChange(false);
         },
         onError: (error) => {
-          toast.error(error.message || 'Failed to ban user');
+          toast.error(error.message || "Failed to ban user");
         },
       },
     );
@@ -427,7 +428,7 @@ function BanUserDialog({
               onClick={handleBanUser}
               variant="destructive"
             >
-              {isPending ? 'Banning...' : 'Ban User'}
+              {isPending ? "Banning..." : "Ban User"}
             </Button>
           </div>
         </div>
@@ -453,14 +454,14 @@ export function UserDetailsDrawer({
   const copyUserId = () => {
     if (user) {
       navigator.clipboard.writeText(user.id);
-      toast.success('User ID copied to clipboard');
+      toast.success("User ID copied to clipboard");
     }
   };
 
   const copyUserEmail = () => {
     if (user) {
       navigator.clipboard.writeText(user.email);
-      toast.success('Email copied to clipboard');
+      toast.success("Email copied to clipboard");
     }
   };
 
@@ -470,10 +471,10 @@ export function UserDetailsDrawer({
       { userId: user.id },
       {
         onSuccess: () => {
-          toast.success('All user sessions revoked');
+          toast.success("All user sessions revoked");
         },
         onError: (error) => {
-          toast.error(error.message || 'Failed to revoke sessions');
+          toast.error(error.message || "Failed to revoke sessions");
         },
       },
     );
@@ -485,10 +486,10 @@ export function UserDetailsDrawer({
       { userId: user.id },
       {
         onSuccess: () => {
-          toast.success('User unbanned successfully');
+          toast.success("User unbanned successfully");
         },
         onError: (error) => {
-          toast.error(error.message || 'Failed to unban user');
+          toast.error(error.message || "Failed to unban user");
         },
       },
     );
@@ -524,9 +525,9 @@ export function UserDetailsDrawer({
                         <AvatarImage alt={user.name} src={user.image} />
                         <AvatarFallback>
                           {user.name
-                            .split(' ')
+                            .split(" ")
                             .map((n) => n[0])
-                            .join('')}
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div>
@@ -571,7 +572,7 @@ export function UserDetailsDrawer({
                         <p className="font-medium">Member Since</p>
                         <p className="flex items-center gap-1 text-muted-foreground">
                           <Calendar className="h-3 w-3" />
-                          {format(user.createdAt, 'MMM dd, yyyy')}
+                          {format(user.createdAt, "MMM dd, yyyy")}
                         </p>
                       </div>
 
@@ -652,7 +653,7 @@ export function UserDetailsDrawer({
                         size="sm"
                         variant="outline"
                       >
-                        {isRevokingSessions ? 'Revoking...' : 'Revoke'}
+                        {isRevokingSessions ? "Revoking..." : "Revoke"}
                       </Button>
                     </div>
 
@@ -697,12 +698,12 @@ export function UserDetailsDrawer({
                       <div className="flex items-center justify-between rounded-lg border p-3">
                         <div>
                           <h4 className="font-medium">
-                            {user.banned ? 'Unban User' : 'Ban User'}
+                            {user.banned ? "Unban User" : "Ban User"}
                           </h4>
                           <p className="text-sm text-muted-foreground">
                             {user.banned
-                              ? 'Restore user access to the platform'
-                              : 'Restrict user access to the platform'}
+                              ? "Restore user access to the platform"
+                              : "Restrict user access to the platform"}
                           </p>
                         </div>
                         {user.banned ? (
@@ -712,7 +713,7 @@ export function UserDetailsDrawer({
                             size="sm"
                             variant="outline"
                           >
-                            {isUnbanning ? 'Unbanning...' : 'Unban'}
+                            {isUnbanning ? "Unbanning..." : "Unban"}
                           </Button>
                         ) : (
                           <Button

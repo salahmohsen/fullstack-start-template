@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import type { ErrorContext } from "better-auth/react";
 import type { SocialProvider } from "better-auth/social-providers";
 
 import { authClient } from "@/lib/auth/auth-client";
-import { queryOptions } from "@tanstack/react-query";
 
 const authQueryKeys = {
   session: ["session"],
@@ -63,9 +63,7 @@ export const useLogin = () => {
     mutationFn: async () => {
       const result = await authClient.signIn.passkey();
       if (result?.error) {
-        throw new Error(
-          result.error.message || "Passkey authentication failed",
-        );
+        throw new Error(result.error.message || "Passkey authentication failed");
       }
       return result;
     },
@@ -173,13 +171,8 @@ export const useAuthHelpers = () => {
   });
 
   const resetPassword = useMutation({
-    mutationFn: async ({
-      newPassword,
-      token,
-    }: {
-      newPassword: string;
-      token: string;
-    }) => await authClient.resetPassword({ newPassword, token }),
+    mutationFn: async ({ newPassword, token }: { newPassword: string; token: string }) =>
+      await authClient.resetPassword({ newPassword, token }),
   });
 
   const verifyTwoFactor = useMutation({
@@ -201,9 +194,7 @@ export const useAuthHelpers = () => {
     mutationFn: async ({ password }: { password: string }) => {
       const result = await authClient.twoFactor.enable({ password });
       if (result.error) {
-        throw new Error(
-          result.error.message || "Failed to enable two-factor authentication",
-        );
+        throw new Error(result.error.message || "Failed to enable two-factor authentication");
       }
       return result;
     },
@@ -213,9 +204,7 @@ export const useAuthHelpers = () => {
     mutationFn: async ({ password }: { password: string }) => {
       const result = await authClient.twoFactor.disable({ password });
       if (result.error) {
-        throw new Error(
-          result.error.message || "Failed to disable two-factor authentication",
-        );
+        throw new Error(result.error.message || "Failed to disable two-factor authentication");
       }
       return result;
     },
@@ -242,8 +231,7 @@ export const useAuthHelpers = () => {
   });
 
   const revokeSession = useMutation({
-    mutationFn: async ({ token }: { token: string }) =>
-      await authClient.revokeSession({ token }),
+    mutationFn: async ({ token }: { token: string }) => await authClient.revokeSession({ token }),
     mutationKey: ["active-sessions"],
   });
 

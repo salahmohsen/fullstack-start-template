@@ -2,11 +2,7 @@ import { cn } from "@/lib/utils";
 
 import { useFieldContext } from ".";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import {
-  InputGroup,
-  InputGroupInput,
-  InputGroupTextarea,
-} from "../ui/input-group";
+import { InputGroup, InputGroupInput, InputGroupTextarea } from "../ui/input-group";
 import type { FieldBaseProps } from "./field-types";
 import { isFieldInvalid } from "./form-utls";
 
@@ -25,15 +21,9 @@ export const InputGroupField = ({
   const isInvalid = isFieldInvalid(field);
 
   return (
-    <Field
-      className={cn(classNames?.wrapper)}
-      data-invalid={isInvalid || undefined}
-    >
+    <Field className={cn(classNames?.wrapper)} data-invalid={isInvalid || undefined}>
       {label ? (
-        <FieldLabel
-          className={cn("sr-only", classNames?.label)}
-          htmlFor={field.name}
-        >
+        <FieldLabel className={cn("sr-only", classNames?.label)} htmlFor={field.name}>
           {label}
         </FieldLabel>
       ) : null}
@@ -57,23 +47,16 @@ export const InputGroupField = ({
         {children}
       </InputGroup>
       {description ? (
-        <FieldDescription className={classNames?.description}>
-          {description}
-        </FieldDescription>
+        <FieldDescription className={classNames?.description}>{description}</FieldDescription>
       ) : null}
       {isInvalid ? (
-        <FieldError
-          className={classNames?.error}
-          errors={field.state.meta.errors}
-        />
+        <FieldError className={classNames?.error} errors={field.state.meta.errors} />
       ) : null}
     </Field>
   );
 };
 
-export const InputGroupTextareaField = ({
-  ...props
-}: React.ComponentProps<"textarea">) => {
+export const InputGroupTextareaField = ({ ...props }: React.ComponentProps<"textarea">) => {
   const field = useFieldContext<React.ComponentProps<"textarea">["value"]>();
   const isInvalid = isFieldInvalid(field);
 

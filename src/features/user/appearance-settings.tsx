@@ -130,7 +130,7 @@ export function AppearanceSettings() {
               Font Size
             </Label>
             <Select
-              onValueChange={(value) => handleDisplaySettingChange("fontSize", value)}
+              onValueChange={(value) => value && handleDisplaySettingChange("fontSize", value)}
               value={displaySettings.fontSize}
             >
               <SelectTrigger>

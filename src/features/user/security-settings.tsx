@@ -1,30 +1,18 @@
-import {
-  Key,
-  Laptop,
-  Shield,
-  ShieldCheck,
-  Smartphone,
-  Trash2,
-} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Key, Laptop, Shield, ShieldCheck, Smartphone, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { authClient } from "@/lib/auth/auth-client";
+
 import { activeSessionsQueryOptions, useAuthHelpers } from "../auth/auth-hooks";
-import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@/components/ui/spinner";
 
 export function SecuritySettings() {
   const { data: session } = authClient.useSession();
@@ -88,16 +76,12 @@ export function SecuritySettings() {
             <Shield className="h-5 w-5" />
             Two-Factor Authentication
           </CardTitle>
-          <CardDescription>
-            Add an extra layer of security to your account.
-          </CardDescription>
+          <CardDescription>Add an extra layer of security to your account.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-sm font-medium">
-                Enable Two-Factor Authentication
-              </Label>
+              <Label className="text-sm font-medium">Enable Two-Factor Authentication</Label>
               <p className="text-sm text-muted-foreground">
                 {settings.twoFactorEnabled
                   ? "Your account is protected with 2FA"
@@ -106,19 +90,14 @@ export function SecuritySettings() {
             </div>
             <div className="flex items-center gap-2">
               {settings.twoFactorEnabled && (
-                <Badge
-                  className="border-green-200 text-green-600"
-                  variant="outline"
-                >
+                <Badge className="border-green-200 text-green-600" variant="outline">
                   <ShieldCheck className="mr-1 h-3 w-3" />
                   Enabled
                 </Badge>
               )}
               <Switch
                 checked={!!settings.twoFactorEnabled}
-                onCheckedChange={(checked) =>
-                  handleSettingChange("twoFactorEnabled", checked)
-                }
+                onCheckedChange={(checked) => handleSettingChange("twoFactorEnabled", checked)}
               />
             </div>
           </div>
@@ -127,8 +106,7 @@ export function SecuritySettings() {
             <Alert>
               <Smartphone className="h-4 w-4" />
               <AlertDescription>
-                Two-factor authentication is currently enabled using your
-                authenticator app.
+                Two-factor authentication is currently enabled using your authenticator app.
                 <div className="mt-2 space-x-2">
                   <Button size="sm" variant="outline">
                     View Recovery Codes
@@ -147,9 +125,7 @@ export function SecuritySettings() {
       <Card>
         <CardHeader>
           <CardTitle>Security Preferences</CardTitle>
-          <CardDescription>
-            Customize your security and notification preferences.
-          </CardDescription>
+          <CardDescription>Customize your security and notification preferences.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
@@ -161,9 +137,7 @@ export function SecuritySettings() {
             </div>
             <Switch
               checked={settings.loginNotifications}
-              onCheckedChange={(checked) =>
-                handleSettingChange("loginNotifications", checked)
-              }
+              onCheckedChange={(checked) => handleSettingChange("loginNotifications", checked)}
             />
           </div>
 
@@ -171,9 +145,7 @@ export function SecuritySettings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-sm font-medium">
-                Suspicious Activity Alerts
-              </Label>
+              <Label className="text-sm font-medium">Suspicious Activity Alerts</Label>
               <p className="text-sm text-muted-foreground">
                 Get alerts for unusual account activity
               </p>
@@ -190,18 +162,14 @@ export function SecuritySettings() {
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <Label className="text-sm font-medium">
-                Auto Session Timeout
-              </Label>
+              <Label className="text-sm font-medium">Auto Session Timeout</Label>
               <p className="text-sm text-muted-foreground">
                 Automatically sign out after 30 minutes of inactivity
               </p>
             </div>
             <Switch
               checked={settings.autoSessionTimeout}
-              onCheckedChange={(checked) =>
-                handleSettingChange("autoSessionTimeout", checked)
-              }
+              onCheckedChange={(checked) => handleSettingChange("autoSessionTimeout", checked)}
             />
           </div>
         </CardContent>
@@ -230,18 +198,14 @@ export function SecuritySettings() {
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">
-                      {activeSession.ipAddress}
-                    </p>
+                    <p className="text-sm font-medium">{activeSession.ipAddress}</p>
                     {activeSession.token === session?.session.token && (
                       <Badge className="text-xs" variant="outline">
                         Current
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {activeSession.userAgent}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{activeSession.userAgent}</p>
                   {/*<div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
@@ -260,11 +224,7 @@ export function SecuritySettings() {
                   size="sm"
                   variant="outline"
                 >
-                  {revokeSession.isPending ? (
-                    <Spinner />
-                  ) : (
-                    <Trash2 className="mr-2 h-4 w-4" />
-                  )}
+                  {revokeSession.isPending ? <Spinner /> : <Trash2 className="mr-2 h-4 w-4" />}
                   Terminate
                 </Button>
               )}
@@ -277,9 +237,7 @@ export function SecuritySettings() {
       <Card>
         <CardHeader>
           <CardTitle>Security Actions</CardTitle>
-          <CardDescription>
-            Additional security management options.
-          </CardDescription>
+          <CardDescription>Additional security management options.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col space-y-2">
@@ -305,10 +263,7 @@ export function SecuritySettings() {
           <Separator />
 
           <div className="flex flex-col space-y-2">
-            <Button
-              className="justify-start text-destructive"
-              variant="outline"
-            >
+            <Button className="justify-start text-destructive" variant="outline">
               Download Account Data
             </Button>
             <p className="ml-0 text-sm text-muted-foreground">

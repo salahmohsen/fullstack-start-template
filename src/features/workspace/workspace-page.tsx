@@ -21,13 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -45,13 +39,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldLabel,
-  FieldSet,
-} from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
 import { InputGroupAddon } from "@/components/ui/input-group";
 import {
   Select,
@@ -80,8 +68,8 @@ import {
   useRemoveMember,
   useSetActiveOrganization,
 } from "@/features/organization/organization-hooks";
-import { useTranslation } from "@/lib/intl/react";
 import { convertImageToBase64 } from "@/lib/converters.utils";
+import { useTranslation } from "@/lib/intl/react";
 
 const inviteMemberSchema = z.object({
   email: z.email("Please enter a valid email address"),
@@ -204,15 +192,11 @@ function CreateOrganizationDialog({
           </FieldSet>
         </form>
         <DialogFooter>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
               <ButtonGroup>
                 <Button
-                  disabled={
-                    !canSubmit || isSubmitting || createOrganisation.isPending
-                  }
+                  disabled={!canSubmit || isSubmitting || createOrganisation.isPending}
                   onClick={() => {
                     form.handleSubmit();
                   }}
@@ -233,11 +217,7 @@ function CreateOrganizationDialog({
   );
 }
 
-function InviteMemberDialog({
-  organizationId,
-}: {
-  organizationId: string | undefined;
-}) {
+function InviteMemberDialog({ organizationId }: { organizationId: string | undefined }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const inviteMember = useInviteMember();
@@ -280,9 +260,7 @@ function InviteMemberDialog({
       <DialogContent className="w-11/12 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Invite Member</DialogTitle>
-          <DialogDescription>
-            Send an invitation to join your organization
-          </DialogDescription>
+          <DialogDescription>Send an invitation to join your organization</DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(e) => {
@@ -317,9 +295,7 @@ function InviteMemberDialog({
                   <FieldLabel htmlFor={field.name}>Role</FieldLabel>
                   <FieldContent>
                     <Select
-                      onValueChange={(value) =>
-                        field.handleChange(value as "admin" | "member")
-                      }
+                      onValueChange={(value) => field.handleChange(value as "admin" | "member")}
                       value={field.state.value}
                     >
                       <SelectTrigger id={field.name}>
@@ -338,25 +314,17 @@ function InviteMemberDialog({
           </FieldSet>
         </form>
         <DialogFooter>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
-          >
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
             {([canSubmit, isSubmitting]) => (
               <ButtonGroup>
                 <Button
-                  disabled={
-                    !canSubmit || isSubmitting || inviteMember.isPending
-                  }
+                  disabled={!canSubmit || isSubmitting || inviteMember.isPending}
                   onClick={() => {
                     form.handleSubmit();
                   }}
                   type="button"
                 >
-                  {inviteMember.isPending || isSubmitting ? (
-                    <Spinner />
-                  ) : (
-                    "Send Invitation"
-                  )}
+                  {inviteMember.isPending || isSubmitting ? <Spinner /> : "Send Invitation"}
                 </Button>
               </ButtonGroup>
             )}
@@ -392,12 +360,10 @@ export function WorkspacePage() {
   const stats = {
     totalMembers: activeOrgData?.members?.length || 0,
     pendingInvitations:
-      activeOrgData?.invitations?.filter((inv) => inv.status === "pending")
-        .length || 0,
+      activeOrgData?.invitations?.filter((inv) => inv.status === "pending").length || 0,
     adminMembers:
-      activeOrgData?.members?.filter(
-        (member) => member.role === "admin" || member.role === "owner",
-      ).length || 0,
+      activeOrgData?.members?.filter((member) => member.role === "admin" || member.role === "owner")
+        .length || 0,
   };
 
   const handleRemoveMember = (memberId: string) => {
@@ -436,9 +402,7 @@ export function WorkspacePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Workspace</h1>
-          <p className="text-muted-foreground">
-            Manage your organization members and invitations
-          </p>
+          <p className="text-muted-foreground">Manage your organization members and invitations</p>
         </div>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -475,9 +439,7 @@ export function WorkspacePage() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          {activeOrgData?.id && (
-            <InviteMemberDialog organizationId={activeOrgData?.id} />
-          )}
+          {activeOrgData?.id && <InviteMemberDialog organizationId={activeOrgData?.id} />}
           <CreateOrganizationDialog
             open={isCreateOrgDialogOpen}
             setOpen={setIsCreateOrgDialogOpen}
@@ -498,9 +460,7 @@ export function WorkspacePage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Pending Invitations
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Pending Invitations</CardTitle>
             <MailPlus className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -529,9 +489,7 @@ export function WorkspacePage() {
             <Card>
               <CardHeader>
                 <CardTitle>Organization Members</CardTitle>
-                <CardDescription>
-                  Manage your organization members and their roles
-                </CardDescription>
+                <CardDescription>Manage your organization members and their roles</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -550,14 +508,10 @@ export function WorkspacePage() {
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={member.user.image || ""} />
-                              <AvatarFallback>
-                                {member.user.name?.charAt(0) || "U"}
-                              </AvatarFallback>
+                              <AvatarFallback>{member.user.name?.charAt(0) || "U"}</AvatarFallback>
                             </Avatar>
                             <div>
-                              <div className="font-medium">
-                                {member.user.name}
-                              </div>
+                              <div className="font-medium">{member.user.name}</div>
                               <div className="text-sm text-muted-foreground">
                                 {member.user.email}
                               </div>
@@ -573,9 +527,7 @@ export function WorkspacePage() {
                                   ? "border-blue-200 bg-blue-100 text-blue-800"
                                   : ""
                             }
-                            variant={
-                              member.role === "owner" ? "default" : "outline"
-                            }
+                            variant={member.role === "owner" ? "default" : "outline"}
                           >
                             {member.role === "owner"
                               ? "Owner"
@@ -595,31 +547,20 @@ export function WorkspacePage() {
                               currentMember?.role === "admin") && (
                               <DropdownMenu>
                                 <DropdownMenuTrigger
-                                  render={
-                                    <Button
-                                      className="h-8 w-8 p-0"
-                                      variant="ghost"
-                                    />
-                                  }
+                                  render={<Button className="h-8 w-8 p-0" variant="ghost" />}
                                 >
                                   <span className="sr-only">Open menu</span>
                                   <MoreHorizontal className="h-4 w-4" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuGroup>
-                                    <DropdownMenuLabel>
-                                      Actions
-                                    </DropdownMenuLabel>
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                     <DropdownMenuItem
                                       className="text-destructive"
-                                      onClick={() =>
-                                        handleRemoveMember(member.id)
-                                      }
+                                      onClick={() => handleRemoveMember(member.id)}
                                     >
                                       <UserMinus className="mr-2 h-4 w-4" />
-                                      {currentMember?.id === member.id
-                                        ? "Leave"
-                                        : "Remove"}
+                                      {currentMember?.id === member.id ? "Leave" : "Remove"}
                                     </DropdownMenuItem>
                                   </DropdownMenuGroup>
                                 </DropdownMenuContent>
@@ -638,19 +579,14 @@ export function WorkspacePage() {
             <Card>
               <CardHeader>
                 <CardTitle>Pending Invitations</CardTitle>
-                <CardDescription>
-                  Manage and track your organization invitations
-                </CardDescription>
+                <CardDescription>Manage and track your organization invitations</CardDescription>
               </CardHeader>
               <CardContent>
-                {activeOrgData?.invitations?.filter(
-                  (inv) => inv.status === "pending",
-                ).length === 0 ? (
+                {activeOrgData?.invitations?.filter((inv) => inv.status === "pending").length ===
+                0 ? (
                   <div className="py-8 text-center">
                     <MailPlus className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-                    <p className="text-muted-foreground">
-                      No pending invitations
-                    </p>
+                    <p className="text-muted-foreground">No pending invitations</p>
                   </div>
                 ) : (
                   <Table>
@@ -666,9 +602,7 @@ export function WorkspacePage() {
                     <TableBody>
                       <AnimatePresence>
                         {activeOrgData?.invitations
-                          ?.filter(
-                            (invitation) => invitation.status === "pending",
-                          )
+                          ?.filter((invitation) => invitation.status === "pending")
                           .map((invitation) => (
                             <motion.tr
                               animate="visible"
@@ -679,22 +613,16 @@ export function WorkspacePage() {
                               variants={inviteVariants}
                             >
                               <TableCell>
-                                <div className="font-medium">
-                                  {invitation.email}
-                                </div>
+                                <div className="font-medium">{invitation.email}</div>
                               </TableCell>
                               <TableCell>
                                 <Badge variant="outline">
-                                  {invitation.role === "admin"
-                                    ? "Admin"
-                                    : "Member"}
+                                  {invitation.role === "admin" ? "Admin" : "Member"}
                                 </Badge>
                               </TableCell>
                               <TableCell>
                                 <div className="text-sm text-muted-foreground">
-                                  {new Date(
-                                    invitation.createdAt,
-                                  ).toLocaleDateString()}
+                                  {new Date(invitation.createdAt).toLocaleDateString()}
                                 </div>
                               </TableCell>
                               <TableCell>
@@ -703,21 +631,15 @@ export function WorkspacePage() {
                               <TableCell>
                                 <div className="flex items-center gap-2">
                                   <Button
-                                    onClick={() =>
-                                      copyInvitationLink(invitation.id)
-                                    }
+                                    onClick={() => copyInvitationLink(invitation.id)}
                                     size="sm"
                                     variant="outline"
                                   >
                                     <Copy className="h-3 w-3" />
                                   </Button>
                                   <Button
-                                    disabled={isRevoking.includes(
-                                      invitation.id,
-                                    )}
-                                    onClick={() =>
-                                      handleCancelInvitation(invitation.id)
-                                    }
+                                    disabled={isRevoking.includes(invitation.id)}
+                                    onClick={() => handleCancelInvitation(invitation.id)}
                                     size="sm"
                                     variant="destructive"
                                   >
