@@ -1,4 +1,4 @@
-import type { AnyFieldApi } from "@tanstack/react-form";
+import type { AnyFieldApi } from "@tanstack/react-form-start";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function FieldInfo({ field }: { field: AnyFieldApi }) {
