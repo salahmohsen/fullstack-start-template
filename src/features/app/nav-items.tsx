@@ -42,7 +42,6 @@ export function NavItems({
             <DropdownMenu>
               <DropdownMenuContent
                 align={isMobile ? "end" : "start"}
-                className="w-48 rounded-lg"
                 side={isMobile ? "bottom" : "right"}
               >
                 <DropdownMenuItem>
